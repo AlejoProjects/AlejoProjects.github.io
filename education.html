@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Education | Alejo</title>
+    <meta name="description" content="Education graph for Alejo's personal page.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="network-page" data-section="education">
+    <canvas id="network-canvas" aria-hidden="true"></canvas>
+    <main class="network-shell">
+      <nav class="top-nav" aria-label="Site navigation">
+        <a href="index.html">CRT</a>
+        <a href="projects.html">Projects</a>
+        <a href="interests.html">Profile</a>
+        <a class="is-current" href="education.html">Education</a>
+      </nav>
+      <section class="node-detail" id="node-detail" aria-label="Selected node">
+        <p class="detail-kicker" id="detail-kicker">Selected signal</p>
+        <h2 id="detail-title"></h2>
+        <p id="detail-copy"></p>
+        <a id="detail-link" href="#" target="_blank" rel="noreferrer">Open link</a>
+      </section>
+      <div id="node-layer" class="node-layer" aria-label="Graph nodes"></div>
+    </main>
+    <script src="content.js"></script>
+    <script src="audio.js"></script>
+    <script src="network.js"></script>
+  </body>
+</html>

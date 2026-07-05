@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alejo | Personal Signal</title>
+    <meta name="description" content="A personal page for projects, profile, and education.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="home-page">
+    <main class="computer-stage" aria-label="Main navigation">
+      <section class="computer" aria-label="Old computer interface">
+        <div class="computer-shell">
+          <div class="speaker-strip" aria-hidden="true"></div>
+          <div class="crt-frame">
+            <div class="crt-screen">
+              <div class="screen-content">
+                <p class="bootline">PERSONAL_PAGE.EXE</p>
+                <h1 id="slide-title">Projects</h1>
+                <p id="slide-copy">
+                  Repositories, experiments, and technical things that became real enough to keep.
+                </p>
+                <a id="slide-link" class="screen-button" href="projects.html">Open Projects</a>
+              </div>
+              <button class="screen-arrow screen-arrow-left" type="button" aria-label="Previous section">&lsaquo;</button>
+              <button class="screen-arrow screen-arrow-right" type="button" aria-label="Next section">&rsaquo;</button>
+              <div class="screen-dots" aria-label="Choose a section">
+                <button class="screen-dot is-active" type="button" aria-label="Projects"></button>
+                <button class="screen-dot" type="button" aria-label="Profile"></button>
+                <button class="screen-dot" type="button" aria-label="Education"></button>
+              </div>
+              <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">
+                Music off
+              </button>
+              <audio id="home-track" src="Gravity_s_Edge.mp3" preload="metadata" loop></audio>
+            </div>
+          </div>
+          <div class="computer-foot">
+            <div class="drive-slot" aria-hidden="true"></div>
+            <div class="power-light" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="keyboard" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </section>
+    </main>
+    <script src="content.js"></script>
+    <script src="audio.js"></script>
+    <script src="home.js"></script>
+  </body>
+</html>
