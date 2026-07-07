@@ -55,6 +55,49 @@
     return 0.56;
   }
 
+  function isMobileLayout() {
+    return window.innerWidth <= 760;
+  }
+
+  function importanceForItem(item, index) {
+    const title = `${item.title} ${item.copy || ""}`.toLowerCase();
+    if (
+      /physics|software|machine learning|astro|diode|finance_agentic|cnn|algol|bootcamp|generative|rag|agents/.test(title)
+    ) {
+      return 3;
+    }
+    if (index < 6 || item.tag === "Platzi") return 2;
+    return 1;
+  }
+
+  function ellipseText(text, maxWidth) {
+    const value = String(text || "");
+    if (ctx.measureText(value).width <= maxWidth) return value;
+    let low = 0;
+    let high = value.length;
+    while (low < high) {
+      const mid = Math.ceil((low + high) / 2);
+      if (ctx.measureText(`${value.slice(0, mid)}...`).width <= maxWidth) low = mid;
+      else high = mid - 1;
+    }
+    return `${value.slice(0, Math.max(1, low)).trim()}...`;
+  }
+
+  function roundedRectPath(x, y, width, height, radius) {
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + width - r, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+    ctx.lineTo(x + width, y + height - r);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+    ctx.lineTo(x + r, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
   function resizeCanvas() {
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.floor(window.innerWidth * ratio);
@@ -68,6 +111,23 @@
     const count = Math.max(items.length, 1);
     const width = window.innerWidth;
     const height = window.innerHeight;
+    if (isMobileLayout()) {
+      nodes = items.map((item, index) => ({
+        item,
+        index,
+        x: 58,
+        y: 126 + index * 86,
+        rx: 18,
+        ry: 18,
+        pillWidth: Math.max(230, width - 92),
+        pillHeight: 54,
+        scale: 1,
+        importance: importanceForItem(item, index),
+        phase: seededNoise(index + 75) * Math.PI * 2,
+        glow: 0
+      }));
+      return;
+    }
     const scale = densityScale(count) * (width < 760 ? 0.82 : 1);
     const aspect = width / Math.max(height, 1);
     const cols = Math.max(2, Math.ceil(Math.sqrt(count * aspect)));
@@ -86,16 +146,24 @@
       const cellY = rows === 1 ? 0.5 : row / (rows - 1);
       const jitterX = (seededNoise(index + 3) - 0.5) * Math.min(120, usableWidth / cols * 0.62) * scale;
       const jitterY = (seededNoise(index + 13) - 0.5) * Math.min(100, usableHeight / rows * 0.62) * scale;
-      const radiusX = (56 + seededNoise(index + 31) * 30) * scale;
-      const radiusY = (38 + seededNoise(index + 51) * 20) * scale;
+      const importance = importanceForItem(item, index);
+      const label = firstWord(item.title);
+      const fontSize = (importance === 3 ? 15 : importance === 2 ? 13 : 12) * scale;
+      ctx.font = `${fontSize}px Inter, ui-sans-serif, system-ui, sans-serif`;
+      const textWidth = Math.min(ctx.measureText(label).width, 165 * scale);
+      const pillWidth = Math.max((importance === 3 ? 142 : importance === 2 ? 122 : 104) * scale, textWidth + 42 * scale);
+      const pillHeight = (importance === 3 ? 58 : importance === 2 ? 50 : 44) * scale;
       return {
         item,
         index,
         x: left + usableWidth * cellX + jitterX,
         y: top + usableHeight * cellY + jitterY,
-        rx: radiusX,
-        ry: radiusY,
+        rx: pillWidth / 2,
+        ry: pillHeight / 2,
+        pillWidth,
+        pillHeight,
         scale,
+        importance,
         phase: seededNoise(index + 75) * Math.PI * 2,
         glow: 0
       };
@@ -125,6 +193,18 @@
   }
 
   function createEdges() {
+    if (isMobileLayout()) {
+      edges = nodes.slice(0, -1).map((node, index) => ({
+        a: index,
+        b: index + 1,
+        from: node,
+        to: nodes[index + 1],
+        bend: 0,
+        width: 2,
+        key: edgeKey(index, index + 1)
+      }));
+      return;
+    }
     const edgeMap = new Map();
     const degree = new Array(nodes.length).fill(0);
 
@@ -151,8 +231,8 @@
         }))
         .sort((a, b) => a.distance - b.distance);
 
-      for (const candidate of nearest.slice(0, 4)) {
-        if (degree[node.index] >= 2 + Math.floor(seededNoise(node.index + 90) * 2)) break;
+      for (const candidate of nearest.slice(0, 3)) {
+        if (degree[node.index] >= (node.importance >= 3 ? 3 : 2)) break;
         addEdge(edgeMap, degree, node.index, candidate.index);
       }
     });
@@ -162,15 +242,22 @@
 
   function createHitTargets() {
     nodeLayer.innerHTML = "";
+    nodeLayer.classList.toggle("is-timeline", isMobileLayout());
     nodes.forEach((node) => {
       const button = document.createElement("button");
-      button.className = "node-hit";
+      button.className = isMobileLayout() ? "timeline-node" : "node-hit";
       button.type = "button";
       button.textContent = node.item.title;
-      button.style.left = `${node.x}px`;
-      button.style.top = `${node.y}px`;
-      button.style.width = `${Math.max(46, node.rx * 1.9)}px`;
-      button.style.height = `${Math.max(34, node.ry * 1.95)}px`;
+      button.title = node.item.title;
+      if (isMobileLayout()) {
+        button.style.setProperty("--index", node.index);
+        button.innerHTML = `<span class="timeline-dot"></span><span class="timeline-title">${node.item.title}</span><span class="timeline-tag">${node.item.tag || section.title}</span>`;
+      } else {
+        button.style.left = `${node.x}px`;
+        button.style.top = `${node.y}px`;
+        button.style.width = `${Math.max(70, node.pillWidth + 12)}px`;
+        button.style.height = `${Math.max(42, node.pillHeight + 12)}px`;
+      }
       button.addEventListener("click", () => selectNode(node.index));
       button.addEventListener("mouseenter", () => {
         node.glow = 1;
@@ -184,6 +271,9 @@
     const item = items[index];
     nodes.forEach((node) => {
       node.glow = node.index === index ? 1 : node.glow;
+    });
+    Array.from(nodeLayer.children).forEach((button, buttonIndex) => {
+      button.classList.toggle("is-selected", buttonIndex === index);
     });
     detail.kicker.textContent = item.tag || section.title;
     detail.title.textContent = item.title;
@@ -323,7 +413,7 @@
       ctx.translate(ovoid.x, ovoid.y);
       ctx.rotate(Math.sin(time * 0.00008 + ovoid.phase) * 0.04);
       ctx.globalAlpha = ovoid.alpha;
-      ctx.fillStyle = ovoid.shade === 22 ? "rgb(24, 29, 38)" : "rgb(2, 5, 12)";
+      ctx.fillStyle = ovoid.shade === 22 ? "rgb(11, 31, 25)" : "rgb(2, 12, 5)";
       drawOvoidPath(ovoid, time);
       ctx.fill();
       ctx.restore();
@@ -332,42 +422,19 @@
   }
 
   function drawTube(edge) {
-    const start = edge.from;
-    const end = edge.to;
-    const gradient = ctx.createLinearGradient(start.x, start.y, end.x, end.y);
-    gradient.addColorStop(0, "rgba(4, 16, 58, 0.94)");
-    gradient.addColorStop(0.34, "rgba(12, 48, 132, 0.9)");
-    gradient.addColorStop(0.68, "rgba(65, 244, 255, 0.46)");
-    gradient.addColorStop(1, "rgba(255, 138, 61, 0.68)");
-    const topSide = sampleTubeSide(edge, 1);
-    const bottomSide = sampleTubeSide(edge, -1).reverse();
-
+    const fromEdge = pointOnEdge(edge, 0.08);
+    const toEdge = pointOnEdge(edge, 0.92);
     ctx.save();
-    ctx.shadowColor = "rgba(6, 13, 31, 0.38)";
-    ctx.shadowBlur = 14;
-    ctx.fillStyle = "rgba(3, 14, 31, 0.34)";
+    ctx.strokeStyle = "rgba(57, 5, 23, 0.72)";
+    ctx.lineWidth = Math.max(1, Math.min(2, edge.width * 0.08));
+    ctx.globalAlpha = 0.68;
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(57, 5, 23, 0.28)";
+    ctx.shadowBlur = 5;
     ctx.beginPath();
-    traceSmoothPoints(topSide.map((point) => ({ x: point.x + 2, y: point.y + 4 })));
-    traceSmoothPoints(bottomSide.map((point) => ({ x: point.x + 2, y: point.y + 4 })), { move: false });
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.beginPath();
-    traceSmoothPoints(topSide);
-    traceSmoothPoints(bottomSide, { move: false });
-    ctx.closePath();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = gradient;
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(255, 208, 176, 0.36)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.strokeStyle = "rgba(65, 244, 255, 0.34)";
-    ctx.lineWidth = Math.max(2, edge.width * 0.14);
-    ctx.beginPath();
-    traceSmoothPoints(topSide.slice(4, -4));
+    ctx.moveTo(fromEdge.x, fromEdge.y);
+    const mid = pointOnEdge(edge, 0.5);
+    ctx.quadraticCurveTo(mid.x, mid.y, toEdge.x, toEdge.y);
     ctx.stroke();
     ctx.restore();
   }
@@ -401,39 +468,45 @@
     const item = node.item;
     const active = node.index === selectedIndex;
     const glow = Math.max(node.glow, active ? 0.62 : 0);
-    const fill = "#06143d";
+    const fill = "rgba(22, 48, 43, 0.68)";
+    const width = node.pillWidth || node.rx * 2;
+    const height = node.pillHeight || node.ry * 2;
+    const importanceAlpha = node.importance === 1 ? 0.72 : node.importance === 2 ? 0.88 : 1;
+    const borderAlpha = node.importance === 3 ? 0.96 : node.importance === 2 ? 0.78 : 0.52;
+    const fontSize = Math.max(11, Math.min(16, (node.importance === 3 ? 15 : node.importance === 2 ? 13 : 12) * (node.scale || 1)));
 
     ctx.save();
     ctx.translate(node.x, node.y);
-    ctx.rotate(Math.sin(time * 0.00025 + node.phase) * 0.05);
+    ctx.rotate(Math.sin(time * 0.00025 + node.phase) * 0.018);
     if (glow > 0.02) {
-      const glowGradient = ctx.createRadialGradient(0, 0, 4, 0, 0, node.rx * 1.7);
-      glowGradient.addColorStop(0, `rgba(65, 244, 255, ${0.5 * glow})`);
-      glowGradient.addColorStop(0.45, `rgba(23, 72, 255, ${0.2 * glow})`);
-      glowGradient.addColorStop(1, "rgba(65, 244, 255, 0)");
+      const glowGradient = ctx.createRadialGradient(0, 0, 4, 0, 0, Math.max(width, height) * 0.78);
+      glowGradient.addColorStop(0, `rgba(163, 133, 96, ${0.42 * glow})`);
+      glowGradient.addColorStop(0.5, `rgba(224, 224, 224, ${0.1 * glow})`);
+      glowGradient.addColorStop(1, "rgba(163, 133, 96, 0)");
       ctx.fillStyle = glowGradient;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, node.rx * 1.75, node.ry * 1.75, 0, 0, Math.PI * 2);
+      roundedRectPath(-width * 0.62, -height * 0.72, width * 1.24, height * 1.44, height * 0.72);
       ctx.fill();
     }
 
-    drawOvoidPath(node, time);
+    ctx.globalAlpha = importanceAlpha;
+    roundedRectPath(-width / 2, -height / 2, width, height, height / 2);
     ctx.fillStyle = fill;
-    ctx.strokeStyle = "rgba(240, 180, 90, 0.82)";
-    ctx.lineWidth = Math.max(1.4, 3 * (node.scale || 1));
-    ctx.shadowColor = `rgba(240, 180, 90, ${0.36 + 0.42 * glow})`;
+    ctx.strokeStyle = `rgba(163, 133, 96, ${Math.min(1, borderAlpha + glow * 0.16)})`;
+    ctx.lineWidth = Math.max(1.2, (node.importance === 3 ? 3.1 : node.importance === 2 ? 2.3 : 1.6) * (node.scale || 1));
+    ctx.shadowColor = `rgba(163, 133, 96, ${0.36 + 0.42 * glow})`;
     ctx.shadowBlur = (8 + 24 * glow) * (node.scale || 1);
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.stroke();
 
-    ctx.fillStyle = "#fff7d1";
-    ctx.shadowColor = "rgba(7, 5, 22, 0.9)";
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#e0e0e0";
+    ctx.shadowColor = "rgba(3, 17, 0, 0.9)";
     ctx.shadowBlur = 4;
-    ctx.font = `${Math.max(7, Math.min(13, node.rx / 5.2))}px ui-monospace, SFMono-Regular, Consolas, monospace`;
+    ctx.font = `600 ${fontSize}px Inter, ui-sans-serif, system-ui, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(firstWord(item.title), 0, 0);
+    ctx.fillText(ellipseText(item.title, width - 24 * (node.scale || 1)), 0, 0);
     ctx.restore();
   }
 
@@ -497,14 +570,14 @@
       const p1 = points[0];
       const p2 = points[points.length - 1];
       const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
-      gradient.addColorStop(0, "rgba(240, 180, 90, 0)");
-      gradient.addColorStop(0.42, "rgba(65, 244, 255, 0.94)");
-      gradient.addColorStop(1, "rgba(255, 208, 176, 1)");
+      gradient.addColorStop(0, "rgba(163, 133, 96, 0)");
+      gradient.addColorStop(0.44, "rgba(224, 224, 224, 0.82)");
+      gradient.addColorStop(1, "rgba(163, 133, 96, 1)");
       ctx.save();
       ctx.lineCap = "round";
       ctx.strokeStyle = gradient;
-      ctx.shadowColor = "rgba(65, 244, 255, 0.95)";
-      ctx.shadowBlur = 22 * enteringScale;
+      ctx.shadowColor = "rgba(163, 133, 96, 0.95)";
+      ctx.shadowBlur = 18 * enteringScale;
       ctx.lineWidth = charge.width * enteringScale;
       ctx.beginPath();
       traceSmoothPoints(points);
@@ -517,17 +590,17 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
     const gradient = ctx.createRadialGradient(width * 0.62, height * 0.22, 40, width * 0.5, height * 0.54, Math.max(width, height));
-    gradient.addColorStop(0, "#34116d");
-    gradient.addColorStop(0.28, "#101c70");
-    gradient.addColorStop(0.62, "#060918");
-    gradient.addColorStop(1, "#02030a");
+    gradient.addColorStop(0, "#16302b");
+    gradient.addColorStop(0.34, "#0c241d");
+    gradient.addColorStop(0.72, "#031100");
+    gradient.addColorStop(1, "#020900");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
     const horizon = ctx.createLinearGradient(0, height * 0.46, 0, height);
-    horizon.addColorStop(0, "rgba(255, 138, 61, 0)");
-    horizon.addColorStop(0.72, "rgba(255, 138, 61, 0.16)");
-    horizon.addColorStop(1, "rgba(240, 180, 90, 0.32)");
+    horizon.addColorStop(0, "rgba(57, 5, 23, 0)");
+    horizon.addColorStop(0.72, "rgba(57, 5, 23, 0.14)");
+    horizon.addColorStop(1, "rgba(163, 133, 96, 0.22)");
     ctx.fillStyle = horizon;
     ctx.fillRect(0, 0, width, height);
 
@@ -540,7 +613,7 @@
       const twinkle = 0.55 + Math.sin(time * 0.0007 + seededNoise(i + 71) * Math.PI * 2) * 0.18;
       const gold = seededNoise(i * 17 + 5) > 0.68;
       ctx.globalAlpha = Math.max(0.18, twinkle);
-      ctx.fillStyle = gold ? "rgba(240, 180, 90, 0.95)" : "rgba(196, 246, 255, 0.9)";
+      ctx.fillStyle = gold ? "rgba(163, 133, 96, 0.95)" : "rgba(224, 224, 224, 0.84)";
       ctx.beginPath();
       ctx.arc(x, y, size, 0, Math.PI * 2);
       ctx.fill();
@@ -550,8 +623,8 @@
 
     ctx.globalAlpha = 0.18;
     const haze = ctx.createRadialGradient(width * 0.18, height * 0.76, 0, width * 0.18, height * 0.76, Math.max(width, height) * 0.55);
-    haze.addColorStop(0, "rgba(255, 138, 61, 0.36)");
-    haze.addColorStop(1, "rgba(255, 138, 61, 0)");
+    haze.addColorStop(0, "rgba(57, 5, 23, 0.24)");
+    haze.addColorStop(1, "rgba(57, 5, 23, 0)");
     ctx.fillStyle = haze;
     ctx.fillRect(0, 0, width, height);
     ctx.restore();
@@ -562,6 +635,7 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
     ctx.save();
+    ctx.filter = "sepia(0.65) saturate(0.75) hue-rotate(72deg) brightness(0.72)";
     galaxyAssets.forEach((asset, index) => {
       if (!asset.image.complete || !asset.image.naturalWidth) return;
       const drawWidth = Math.min(width * asset.w, asset.image.naturalWidth);
@@ -579,8 +653,12 @@
     nodes.forEach((node) => {
       node.glow = Math.max(0, node.glow - delta / 900);
     });
-    updateCharges(delta);
     drawBackground(time);
+    if (isMobileLayout()) {
+      window.requestAnimationFrame(draw);
+      return;
+    }
+    updateCharges(delta);
     drawDistantOvoids(time);
     edges.forEach(drawTube);
     drawCharges();
