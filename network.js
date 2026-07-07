@@ -22,14 +22,16 @@
   let distantOvoids = [];
   let distantOvoidViewportKey = "";
   let reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const backgroundImage = new Image();
+  backgroundImage.src = "ASSETS/background.png";
   const galaxyAssetSources = {
     projects: [
-      { src: "ASSETS/galaxy_spiral_large.png", x: 0.03, y: 0.08, w: 0.34, alpha: 0.5, drift: 0.012 },
-      { src: "ASSETS/galaxy_blackhole_top.png", x: 0.64, y: 0.1, w: 0.28, alpha: 0.42, drift: -0.016 }
+      { src: "ASSETS/chair_asset.png", x: 0.04, y: 0.42, w: 0.26, alpha: 0.42, drift: 0.008 },
+      { src: "ASSETS/tree_asset.png", x: 0.72, y: 0.08, w: 0.2, alpha: 0.36, drift: -0.012 }
     ],
     education: [
-      { src: "ASSETS/galaxy_blackhole_top.png", x: 0.05, y: 0.1, w: 0.28, alpha: 0.46, drift: -0.012 },
-      { src: "ASSETS/galaxy_spiral_large.png", x: 0.62, y: 0.08, w: 0.31, alpha: 0.42, drift: 0.014 }
+      { src: "ASSETS/tree_asset.png", x: 0.04, y: 0.08, w: 0.22, alpha: 0.4, drift: -0.01 },
+      { src: "ASSETS/chair_asset.png", x: 0.68, y: 0.44, w: 0.27, alpha: 0.38, drift: 0.01 }
     ]
   };
   const galaxyAssets = (galaxyAssetSources[sectionKey] || []).map((asset) => {
@@ -589,12 +591,29 @@
   function drawBackground(time) {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const gradient = ctx.createRadialGradient(width * 0.62, height * 0.22, 40, width * 0.5, height * 0.54, Math.max(width, height));
-    gradient.addColorStop(0, "#16302b");
-    gradient.addColorStop(0.34, "#0c241d");
-    gradient.addColorStop(0.72, "#031100");
-    gradient.addColorStop(1, "#020900");
-    ctx.fillStyle = gradient;
+    if (backgroundImage.complete && backgroundImage.naturalWidth) {
+      const imageRatio = backgroundImage.naturalWidth / backgroundImage.naturalHeight;
+      const viewportRatio = width / height;
+      const drawWidth = viewportRatio > imageRatio ? width : height * imageRatio;
+      const drawHeight = viewportRatio > imageRatio ? width / imageRatio : height;
+      const x = (width - drawWidth) / 2;
+      const y = (height - drawHeight) / 2;
+      ctx.drawImage(backgroundImage, x, y, drawWidth, drawHeight);
+    } else {
+      const gradient = ctx.createRadialGradient(width * 0.62, height * 0.22, 40, width * 0.5, height * 0.54, Math.max(width, height));
+      gradient.addColorStop(0, "#16302b");
+      gradient.addColorStop(0.34, "#0c241d");
+      gradient.addColorStop(0.72, "#031100");
+      gradient.addColorStop(1, "#020900");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    const shade = ctx.createRadialGradient(width * 0.48, height * 0.28, 30, width * 0.5, height * 0.54, Math.max(width, height));
+    shade.addColorStop(0, "rgba(22, 48, 43, 0.16)");
+    shade.addColorStop(0.56, "rgba(3, 17, 0, 0.32)");
+    shade.addColorStop(1, "rgba(2, 9, 0, 0.82)");
+    ctx.fillStyle = shade;
     ctx.fillRect(0, 0, width, height);
 
     const horizon = ctx.createLinearGradient(0, height * 0.46, 0, height);
@@ -635,7 +654,7 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
     ctx.save();
-    ctx.filter = "sepia(0.65) saturate(0.75) hue-rotate(72deg) brightness(0.72)";
+    ctx.filter = "saturate(0.82) brightness(0.78)";
     galaxyAssets.forEach((asset, index) => {
       if (!asset.image.complete || !asset.image.naturalWidth) return;
       const drawWidth = Math.min(width * asset.w, asset.image.naturalWidth);

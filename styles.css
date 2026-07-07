@@ -46,6 +46,8 @@ a {
     radial-gradient(circle, rgba(163, 133, 96, 0.46) 0 1px, transparent 1.8px) 31px 21px / 116px 116px,
     radial-gradient(circle at 18% 16%, rgba(163, 133, 96, 0.18), transparent 22rem),
     radial-gradient(circle at 78% 18%, rgba(57, 5, 23, 0.22), transparent 26rem),
+    linear-gradient(180deg, rgba(3, 17, 0, 0.2), rgba(3, 17, 0, 0.78)),
+    url("ASSETS/background.png") center / cover fixed no-repeat,
     linear-gradient(180deg, #16302b 0%, #0d241d 44%, #031100 100%);
 }
 
@@ -60,11 +62,11 @@ a {
   z-index: 0;
   pointer-events: none;
   background:
-    url("ASSETS/galaxy_spiral_large.png") left 4vw top 8vh / min(320px, 30vw) auto no-repeat,
-    url("ASSETS/galaxy_blackhole_top.png") right 5vw top 10vh / min(300px, 28vw) auto no-repeat;
-  opacity: 0.3;
-  mix-blend-mode: luminosity;
-  filter: sepia(0.55) saturate(0.72) hue-rotate(72deg) brightness(0.78);
+    url("ASSETS/tree_asset.png") left 3vw bottom 9vh / min(230px, 24vw) auto no-repeat,
+    url("ASSETS/chair_asset.png") right 4vw bottom 11vh / min(250px, 25vw) auto no-repeat;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+  filter: saturate(0.86) brightness(0.72);
 }
 
 .home-page::before,
@@ -379,7 +381,10 @@ a {
 .network-page {
   min-height: 100vh;
   overflow: hidden;
-  background: #031100;
+  background:
+    linear-gradient(180deg, rgba(3, 17, 0, 0.22), rgba(3, 17, 0, 0.82)),
+    url("ASSETS/background.png") center / cover fixed no-repeat,
+    #031100;
 }
 
 #network-canvas {
@@ -432,6 +437,7 @@ a {
 
 .node-detail {
   position: fixed;
+  z-index: 8;
   right: clamp(14px, 4vw, 44px);
   bottom: clamp(14px, 4vw, 40px);
   width: min(420px, calc(100vw - 28px));
@@ -897,6 +903,7 @@ a {
   }
 
   .node-detail {
+    z-index: 10;
     left: 10px;
     right: 10px;
     bottom: 10px;
@@ -911,6 +918,8 @@ a {
       radial-gradient(circle, rgba(224, 224, 224, 0.48) 0 1px, transparent 1.8px) 0 0 / 72px 72px,
       radial-gradient(circle, rgba(163, 133, 96, 0.34) 0 1px, transparent 1.8px) 38px 24px / 118px 118px,
       radial-gradient(circle at 50% 28%, rgba(163, 133, 96, 0.18), transparent 18rem),
+      linear-gradient(180deg, rgba(3, 17, 0, 0.18), rgba(3, 17, 0, 0.82)),
+      url("ASSETS/background.png") center / cover no-repeat,
       linear-gradient(180deg, #16302b 0%, #0d241d 42%, #031100 100%);
   }
 
