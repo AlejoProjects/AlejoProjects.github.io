@@ -54,6 +54,7 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
 
 /* A dimensional, moving scene stays visible when WebGL is unavailable. */
 .atlas-stage { perspective: 1000px; }
+.atlas-stage::before, .atlas-stage::after, .atlas-stage .atlas-halo { display: none; }
 .scene-fallback { position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; pointer-events: none; opacity: 1; transition: opacity .5s ease; }
 .atlas-stage.is-webgl-ready .scene-fallback { opacity: 0; }
 .scene-object { position: relative; width: min(64%, 450px); aspect-ratio: 1; transform-style: preserve-3d; transform: rotateX(var(--scene-x, -16deg)) rotateY(var(--scene-y, 25deg)); animation: scene-float 13s ease-in-out infinite alternate; filter: drop-shadow(0 34px 45px rgba(0,0,0,.42)); }
@@ -62,6 +63,7 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
 .scene-ring-one { transform: rotateX(69deg) rotateY(14deg) translateZ(55px); border-width: 5px; border-color: rgba(240,167,104,.8); box-shadow: 0 0 26px rgba(242,149,94,.7), inset 0 0 22px rgba(231,139,101,.4); }
 .scene-ring-two { inset: 3%; border-color: rgba(124,221,210,.57); transform: rotateY(70deg) rotateZ(26deg) translateZ(5px); }
 .scene-ring-three { inset: 24%; border-color: rgba(255,224,168,.4); transform: rotateX(27deg) rotateY(63deg) translateZ(115px); }
+.scene-ring-two, .scene-ring-three { display: none; }
 .scene-node { position: absolute; width: 19px; aspect-ratio: 1; border-radius: 50%; background: #ffbd70; box-shadow: 0 0 0 7px rgba(255,189,112,.18), 0 0 18px 5px #ff995c; transform: translateZ(100px); }
 .scene-node-a { top: 21%; left: 32%; background: #82e4df; box-shadow: 0 0 0 7px rgba(130,228,223,.18), 0 0 20px 6px #5adbd0; }
 .scene-node-b { bottom: 23%; right: 14%; background: #ff86b9; box-shadow: 0 0 0 7px rgba(255,134,185,.18), 0 0 20px 6px #f56da7; }
