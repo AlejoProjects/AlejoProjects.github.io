@@ -8,6 +8,7 @@
     <meta name="description" content="Alejo's portfolio: MLOps, software, machine learning, and scientific computing.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="refresh.css">
+    <link rel="stylesheet" href="renovation.css">
   </head>
   <body class="home-page">
     <header class="site-header">
@@ -43,9 +44,19 @@
               <span>Machine learning / operations</span>
             </div>
           </div>
+          <div class="portal-links" aria-label="Explore this portfolio">
+            <a class="portal-link portal-projects" href="projects.html"><small>01 / Explore</small><strong>Projects ↗</strong></a>
+            <a class="portal-link portal-profile" href="interests.html"><small>02 / Meet</small><strong>Profile ↗</strong></a>
+            <a class="portal-link portal-education" href="education.html"><small>03 / Learn</small><strong>Education ↗</strong></a>
+          </div>
           <p class="scene-footnote">A small study in flow, signal, and structure.</p>
         </div>
       </section>
+
+      <div class="skill-marquee" aria-label="Technologies and fields"><div class="skill-track" aria-hidden="true">
+        <span>Kubernetes</span><span>Helm</span><span>Grafana</span><span>Datadog</span><span>Go</span><span>Python</span><span>Machine learning</span><span>Scientific computing</span>
+        <span>Kubernetes</span><span>Helm</span><span>Grafana</span><span>Datadog</span><span>Go</span><span>Python</span><span>Machine learning</span><span>Scientific computing</span>
+      </div></div>
 
       <section class="work-section" id="current-work" aria-labelledby="work-title">
         <div class="work-heading">
@@ -56,22 +67,18 @@
           <p>Supporting the systems and workflows that help machine learning teams ship and operate their work.</p>
         </div>
         <div class="work-grid">
-          <article class="work-item">
-            <p class="work-label">Platform</p>
-            <h3>Kubernetes and Helm</h3>
-            <p>Resolve platform tickets, support MLOps workflows, and work with Helm charts in Kubernetes environments.</p>
-          </article>
-          <article class="work-item">
-            <p class="work-label">Observability</p>
-            <h3>Grafana and Datadog</h3>
-            <p>Investigate tickets using monitoring and observability tools, helping teams understand system behavior.</p>
-          </article>
-          <article class="work-item">
-            <p class="work-label">Delivery</p>
-            <h3>Go and canary tests</h3>
-            <p>Make Go code edits and support canary testing as part of day-to-day MLOps operations.</p>
-          </article>
+          <article class="work-item"><p class="work-label">01 / Platform</p><h3>Kubernetes support</h3><p>Investigate and resolve platform tickets that affect MLOps workflows.</p></article>
+          <article class="work-item"><p class="work-label">02 / Configuration</p><h3>Helm charts</h3><p>Work with deployment configuration and charts across Kubernetes environments.</p></article>
+          <article class="work-item"><p class="work-label">03 / Observability</p><h3>Grafana</h3><p>Use monitoring views to understand service behavior and investigate issues.</p></article>
+          <article class="work-item"><p class="work-label">04 / Observability</p><h3>Datadog</h3><p>Follow signals from alerts and dashboards into practical support work.</p></article>
+          <article class="work-item"><p class="work-label">05 / Engineering</p><h3>Go code</h3><p>Make targeted Go edits as part of the operational development cycle.</p></article>
+          <article class="work-item"><p class="work-label">06 / Delivery</p><h3>Canary tests</h3><p>Support progressive release checks and validate behavior before wider rollout.</p></article>
         </div>
+      </section>
+
+      <section class="spotlight" aria-labelledby="spotlight-title">
+        <div class="spotlight-intro"><p class="eyebrow">Selected work</p><h2 id="spotlight-title">A closer look at the work.</h2><p>From computational physics to machine learning experiments, these projects connect research questions with working software.</p></div>
+        <article class="spotlight-card" aria-live="polite"><span class="eyebrow" id="spotlight-count">01 / 04</span><div><h3 id="spotlight-name">Finance agent simulation</h3><p id="spotlight-copy">Exploring market behavior with language-model and classical agents.</p></div><div class="spotlight-controls"><a id="spotlight-link" href="https://github.com/AlejoProjects/finance_agentic_simulation" target="_blank" rel="noreferrer">View project ↗</a><div><button type="button" id="spotlight-prev" aria-label="Previous project">←</button><button type="button" id="spotlight-next" aria-label="Next project">→</button></div></div></article>
       </section>
 
       <section class="next-section" aria-labelledby="next-title">
@@ -81,9 +88,9 @@
           <div>
             <p>Explore the projects, studies, and interests behind my work.</p>
             <div class="next-links">
-              <a href="projects.html">View projects <span aria-hidden="true">↗</span></a>
-              <a href="interests.html">Read my profile <span aria-hidden="true">↗</span></a>
-              <a href="education.html">See what I’m learning <span aria-hidden="true">↗</span></a>
+              <details><summary>Projects</summary><p>Explore simulations, software tools, and machine learning work in an interactive 3D archive. <a href="projects.html">Open projects ↗</a></p></details>
+              <details><summary>Profile</summary><p>Read more about my interests and the way I work. <a href="interests.html">Open profile ↗</a></p></details>
+              <details><summary>Education</summary><p>Browse courses and studies across physics, computing, and machine learning. <a href="education.html">Open education ↗</a></p></details>
             </div>
           </div>
         </div>
@@ -95,6 +102,10 @@
       <p>Thanks for stopping by.</p>
       <a href="https://github.com/AlejoProjects" target="_blank" rel="noreferrer">GitHub profile <span aria-hidden="true">↗</span></a>
     </footer>
+    <script src="vendor/gsap.min.js"></script>
+    <script src="vendor/ScrollTrigger.min.js"></script>
     <script src="hero-motion.js"></script>
+    <script src="renovation.js"></script>
   </body>
 </html>
+
