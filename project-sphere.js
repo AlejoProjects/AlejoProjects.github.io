@@ -53,26 +53,43 @@ import * as THREE from "./vendor/three.module.min.js";
 
   function makeCoreTexture() {
     const surface = document.createElement("canvas");
-    surface.width = 512;
-    surface.height = 256;
+    surface.width = 1024;
+    surface.height = 512;
     const paint = surface.getContext("2d");
     const background = paint.createLinearGradient(0, 0, 0, surface.height);
     const stops = [
-      [0, "#173449"], [.17, "#090e21"], [.36, "#02040c"],
-      [.55, "#120919"], [.73, "#44253d"], [.88, "#bd784f"], [1, "#160e23"]
+      [0, "#182b4b"], [.18, "#352448"], [.34, "#100d28"],
+      [.49, "#030510"], [.59, "#321329"], [.73, "#9e4b45"],
+      [.88, "#edaa67"], [1, "#241537"]
     ];
     stops.forEach(([at, color]) => background.addColorStop(at, color));
     paint.fillStyle = background;
     paint.fillRect(0, 0, surface.width, surface.height);
-    for (let band = 0; band < 9; band += 1) {
-      const y = 166 + band * 5;
+    const amberGlow = paint.createRadialGradient(750, 380, 12, 750, 380, 380);
+    amberGlow.addColorStop(0, "rgba(255,194,112,.62)");
+    amberGlow.addColorStop(1, "rgba(255,194,112,0)");
+    paint.fillStyle = amberGlow;
+    paint.fillRect(0, 0, surface.width, surface.height);
+    const violetGlow = paint.createRadialGradient(190, 145, 10, 190, 145, 340);
+    violetGlow.addColorStop(0, "rgba(117,97,198,.42)");
+    violetGlow.addColorStop(1, "rgba(117,97,198,0)");
+    paint.fillStyle = violetGlow;
+    paint.fillRect(0, 0, surface.width, surface.height);
+    for (let band = 0; band < 16; band += 1) {
+      const y = 300 + band * 9;
       paint.beginPath();
-      paint.moveTo(-20, y);
-      paint.bezierCurveTo(128, y - 26, 294, y + 22, 532, y - 13);
-      paint.strokeStyle = band % 3 === 0 ? "rgba(255,192,119,.24)" : "rgba(142,90,148,.16)";
-      paint.lineWidth = band % 3 === 0 ? 3 : 2;
+      paint.moveTo(-30, y);
+      paint.bezierCurveTo(270, y - 44, 600, y + 46, 1054, y - 28);
+      paint.strokeStyle = band % 3 === 0 ? "rgba(255,211,143,.53)" : "rgba(235,133,174,.32)";
+      paint.lineWidth = band % 3 === 0 ? 5 : 3;
       paint.stroke();
     }
+    const shadow = paint.createRadialGradient(500, 255, 20, 500, 255, 190);
+    shadow.addColorStop(0, "rgba(0,0,8,.95)");
+    shadow.addColorStop(.55, "rgba(1,2,12,.68)");
+    shadow.addColorStop(1, "rgba(1,2,12,0)");
+    paint.fillStyle = shadow;
+    paint.fillRect(0, 0, surface.width, surface.height);
     const texture = new THREE.CanvasTexture(surface);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.wrapS = THREE.RepeatWrapping;
@@ -80,16 +97,16 @@ import * as THREE from "./vendor/three.module.min.js";
     return texture;
   }
 
+  const coreTexture = makeCoreTexture();
   const core = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.8, 5),
-    new THREE.MeshPhysicalMaterial({
-      map: makeCoreTexture(),
-      metalness: 0.24,
-      roughness: 0.48,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.3,
-      emissive: 0x241325,
-      emissiveIntensity: 0.2
+    new THREE.SphereGeometry(1.8, 96, 64),
+    new THREE.MeshStandardMaterial({
+      map: coreTexture,
+      emissiveMap: coreTexture,
+      emissive: 0xffffff,
+      emissiveIntensity: 0.55,
+      metalness: 0.04,
+      roughness: 0.84
     })
   );
   globe.add(core);
@@ -101,16 +118,6 @@ import * as THREE from "./vendor/three.module.min.js";
   const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0xe780a3, transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false }));
   diskGlow.rotation.copy(disk.rotation);
   globe.add(diskGlow);
-
-  const wire = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.82, 2)),
-    new THREE.LineBasicMaterial({ color: 0x72c7b8, transparent: true, opacity: 0.24 })
-  );
-  globe.add(wire);
-
-  const latitudeMaterial = new THREE.MeshBasicMaterial({ color: 0xe2bf79, wireframe: true, transparent: true, opacity: 0.075 });
-  const latitude = new THREE.Mesh(new THREE.SphereGeometry(1.84, 18, 12), latitudeMaterial);
-  globe.add(latitude);
 
   function orbit(radius, tilt, color, opacity, eccentricity = 1) {
     const curve = new THREE.EllipseCurve(0, 0, radius, radius * eccentricity, 0, Math.PI * 2, false, 0);
