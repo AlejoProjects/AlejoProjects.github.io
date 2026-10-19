@@ -3,30 +3,84 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Education | Alejo</title>
-    <meta name="description" content="Education graph for Alejo's personal page.">
+    <meta name="theme-color" content="#071719">
+    <title>Learning in orbit | Alejo</title>
+    <meta name="description" content="A living atlas of Alejo's physics studies, software learning, workshops, and credentials.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="refresh.css">
+    <link rel="stylesheet" href="atlas.css">
+    <script type="importmap">
+      {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}
+    </script>
   </head>
-  <body class="network-page" data-section="education">
-    <canvas id="network-canvas" aria-hidden="true"></canvas>
-    <main class="network-shell">
-      <nav class="top-nav" aria-label="Site navigation">
-        <a href="index.html">CRT</a>
+  <body class="atlas-page learning-atlas" data-section="education">
+    <header class="site-header">
+      <a class="site-mark" href="index.html" aria-label="Alejo home">ALEJO<span> / SYSTEMS</span></a>
+      <nav class="top-nav home-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
         <a href="projects.html">Projects</a>
         <a href="interests.html">Profile</a>
         <a class="is-current" href="education.html">Education</a>
       </nav>
-      <section class="node-detail" id="node-detail" aria-label="Selected node">
-        <p class="detail-kicker" id="detail-kicker">Selected signal</p>
-        <h2 id="detail-title"></h2>
-        <p id="detail-copy"></p>
-        <a id="detail-link" href="#" target="_blank" rel="noreferrer">Open link</a>
+      <a class="header-contact" href="index.html#contact">Get in touch <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main class="atlas-main">
+      <section class="atlas-intro" aria-labelledby="atlas-title">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Notes from the learning path</p>
+          <h1 id="atlas-title">Learning has<br><em>no horizon.</em></h1>
+        </div>
+        <div class="atlas-intro-note">
+          <p>Physics, computation, machine learning, and the courses that keep opening new doors—collected as one living map.</p>
+          <p class="atlas-handnote">Ideas connect across disciplines <span aria-hidden="true">↘</span></p>
+        </div>
       </section>
-      <div id="node-layer" class="node-layer" aria-label="Graph nodes"></div>
+
+      <section class="atlas-composition" aria-label="Interactive learning atlas">
+        <div class="atlas-stage-wrap">
+          <div class="atlas-stage" id="atlas-stage">
+            <div class="atlas-halo atlas-halo-one" aria-hidden="true"></div>
+            <div class="atlas-halo atlas-halo-two" aria-hidden="true"></div>
+            <canvas id="project-sphere" aria-label="Three-dimensional globe of learning topics. Drag to rotate and select a glowing point."></canvas>
+            <div class="atlas-coordinates" aria-hidden="true"><span>02° / 88°</span><span>FIELD 002</span></div>
+            <div class="atlas-orbit-label atlas-orbit-label-a" aria-hidden="true">study / practice</div>
+            <div class="atlas-orbit-label atlas-orbit-label-b" aria-hidden="true">questions in motion</div>
+            <p class="atlas-stage-hint"><span class="drag-glyph" aria-hidden="true">◎</span> Drag to turn the globe</p>
+            <button id="atlas-reset" class="atlas-reset" type="button" aria-label="Reset globe rotation">Reset view</button>
+          </div>
+          <div class="atlas-statusline"><span class="status-light" aria-hidden="true"></span><span id="atlas-status" aria-live="polite">Preparing the learning constellation…</span></div>
+        </div>
+
+        <aside class="project-detail" aria-live="polite" aria-label="Selected learning item">
+          <div class="project-art" id="project-art" aria-hidden="true"></div>
+          <div class="project-detail-copy">
+            <p class="detail-kicker" id="detail-kicker">LEARNING SIGNAL</p>
+            <h2 id="detail-title">Choose a point</h2>
+            <p id="detail-copy">Select a glowing point on the globe, or choose a topic from the index below.</p>
+            <a id="detail-link" class="project-open-link" href="https://github.com/AlejoProjects" target="_blank" rel="noreferrer">Open resource <span aria-hidden="true">↗</span></a>
+          </div>
+          <span class="detail-index" aria-hidden="true">LEARNING / A—Z</span>
+        </aside>
+      </section>
+
+      <section class="atlas-index-section" aria-labelledby="index-title">
+        <div class="atlas-index-heading">
+          <div><p class="eyebrow">Keep exploring</p><h2 id="index-title">The whole learning path</h2></div>
+          <p>Courses, credentials, workshops, and studies remain together. Choose a name to bring its signal forward.</p>
+        </div>
+        <div class="atlas-index" id="atlas-index" aria-label="All learning signals"></div>
+      </section>
     </main>
+
+    <footer class="site-footer atlas-footer" id="contact">
+      <a class="site-mark" href="index.html">ALEJO<span> / SYSTEMS</span></a>
+      <p>Every discipline adds another perspective.</p>
+      <a href="projects.html">Back to the project atlas <span aria-hidden="true">↗</span></a>
+    </footer>
+
     <script src="content.js"></script>
-    <script src="audio.js"></script>
-    <script src="network.js"></script>
+    <script src="atlas-fallback.js"></script>
+    <script type="module" src="project-sphere.js"></script>
   </body>
 </html>
