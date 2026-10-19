@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#071719">
     <title>Learning in orbit | Alejo</title>
-    <meta name="description" content="A living atlas of Alejo's physics studies, software learning, workshops, and credentials.">
+    <meta name="description" content="An interactive view of Alejo's physics studies, software learning, workshops, and credentials.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="refresh.css">
     <link rel="stylesheet" href="atlas.css">
-    <script type="importmap">
-      {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}
-    </script>
+    <link rel="stylesheet" href="renovation.css">
   </head>
   <body class="atlas-page learning-atlas" data-section="education">
     <header class="site-header">
@@ -29,7 +27,7 @@
       <section class="atlas-intro" aria-labelledby="atlas-title">
         <div>
           <p class="eyebrow"><span class="eyebrow-dot"></span> Notes from the learning path</p>
-          <h1 id="atlas-title">Learning has<br><em>no horizon.</em></h1>
+          <h1 id="atlas-title">Learning across<br><em>disciplines.</em></h1>
         </div>
         <div class="atlas-intro-note">
           <p>Physics, computation, machine learning, and the courses that keep opening new doors—collected as one living map.</p>
@@ -37,11 +35,12 @@
         </div>
       </section>
 
-      <section class="atlas-composition" aria-label="Interactive learning atlas">
+      <section class="atlas-composition" aria-label="Interactive 3D education globe">
         <div class="atlas-stage-wrap">
           <div class="atlas-stage" id="atlas-stage">
             <div class="atlas-halo atlas-halo-one" aria-hidden="true"></div>
             <div class="atlas-halo atlas-halo-two" aria-hidden="true"></div>
+            <div class="scene-fallback" aria-hidden="true"><div class="scene-object"><div class="scene-core"></div><div class="scene-ring scene-ring-one"></div><div class="scene-ring scene-ring-two"></div><div class="scene-ring scene-ring-three"></div><div class="scene-node scene-node-a"></div><div class="scene-node scene-node-b"></div><div class="scene-node scene-node-c"></div></div></div>
             <canvas id="project-sphere" aria-label="Three-dimensional globe of learning topics. Drag to rotate and select a glowing point."></canvas>
             <div class="atlas-coordinates" aria-hidden="true"><span>02° / 88°</span><span>FIELD 002</span></div>
             <div class="atlas-orbit-label atlas-orbit-label-a" aria-hidden="true">study / practice</div>
@@ -56,7 +55,7 @@
           <div class="project-art" id="project-art" aria-hidden="true"></div>
           <div class="project-detail-copy">
             <p class="detail-kicker" id="detail-kicker">LEARNING SIGNAL</p>
-            <h2 id="detail-title">Choose a point</h2>
+            <h2 id="detail-title">Select a topic</h2>
             <p id="detail-copy">Select a glowing point on the globe, or choose a topic from the index below.</p>
             <a id="detail-link" class="project-open-link" href="https://github.com/AlejoProjects" target="_blank" rel="noreferrer">Open resource <span aria-hidden="true">↗</span></a>
           </div>
@@ -66,21 +65,23 @@
 
       <section class="atlas-index-section" aria-labelledby="index-title">
         <div class="atlas-index-heading">
-          <div><p class="eyebrow">Keep exploring</p><h2 id="index-title">The whole learning path</h2></div>
-          <p>Courses, credentials, workshops, and studies remain together. Choose a name to bring its signal forward.</p>
+          <div><p class="eyebrow">Keep exploring</p><h2 id="index-title">Education and studies</h2></div>
+          <p>Courses, credentials, workshops, and studies remain together. Choose a name to see its details.</p>
         </div>
-        <div class="atlas-index" id="atlas-index" aria-label="All learning signals"></div>
+        <div class="atlas-index" id="atlas-index" aria-label="All learning topics"></div>
       </section>
     </main>
 
     <footer class="site-footer atlas-footer" id="contact">
       <a class="site-mark" href="index.html">ALEJO<span> / SYSTEMS</span></a>
       <p>Every discipline adds another perspective.</p>
-      <a href="projects.html">Back to the project atlas <span aria-hidden="true">↗</span></a>
+      <a href="projects.html">View projects <span aria-hidden="true">↗</span></a>
     </footer>
 
     <script src="content.js"></script>
     <script src="atlas-fallback.js"></script>
+    <script src="scene-fallback.js"></script>
     <script type="module" src="project-sphere.js"></script>
   </body>
 </html>
+
