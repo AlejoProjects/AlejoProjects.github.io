@@ -69,7 +69,8 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
 .scene-node-b { bottom: 23%; right: 14%; background: #ff86b9; box-shadow: 0 0 0 7px rgba(255,134,185,.18), 0 0 20px 6px #f56da7; }
 .scene-node-c { top: 44%; right: 9%; background: #c3a4ff; box-shadow: 0 0 0 7px rgba(195,164,255,.18), 0 0 20px 6px #a987ee; }
 .learning-atlas .scene-core { background: radial-gradient(circle at 30% 25%, #372c5c 0%, #12102c 32%, #02040c 65%, #24133d 88%, #080713 100%); }
-.learning-atlas .scene-ring-one { border-color: rgba(197,159,255,.85); box-shadow: 0 0 28px rgba(183,147,250,.7); }
+.learning-atlas .scene-ring { display: none; }
+.learning-atlas .atlas-stage { background: radial-gradient(ellipse at 50% 48%, rgba(58,32,103,.28), transparent 54%), linear-gradient(155deg, #0b0a19, #050713); }
 @keyframes scene-float { to { transform: rotateX(calc(var(--scene-x, -16deg) + 6deg)) rotateY(calc(var(--scene-y, 25deg) + 20deg)) translateY(-12px); } }
 .atlas-stage:not(.is-webgl-ready) #project-sphere { pointer-events: none; }
 .atlas-stage:not(.is-webgl-ready) .scene-fallback { pointer-events: auto; cursor: grab; touch-action: pan-y; }
