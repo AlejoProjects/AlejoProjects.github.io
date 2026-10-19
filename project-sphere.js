@@ -85,9 +85,9 @@ import * as THREE from "./vendor/three.module.min.js";
           vec3 p = normalize(vLocal);
           float cloud = 0.62 * noise3(p * 3.0) + 0.26 * noise3(p * 6.0) + 0.12 * noise3(p * 11.0);
           float violet = ${sectionKey === "education" ? "smoothstep(-0.9, 0.95, p.y) * 0.8 + 0.1" : "smoothstep(0.28, 0.7, cloud)"};
-          vec3 color = mix(vec3(0.003, 0.002, 0.014), vec3(0.17, 0.065, 0.31), violet * 0.9);
+          vec3 color = mix(vec3(0.002, 0.002, 0.009), vec3(0.075, 0.028, 0.145), violet * 0.8);
           float rim = pow(1.0 - max(normalize(vViewNormal).z, 0.0), 2.2);
-          color += vec3(0.12, 0.055, 0.26) * rim;
+          color += vec3(0.05, 0.021, 0.1) * rim;
           gl_FragColor = vec4(color, 1.0);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
@@ -96,16 +96,6 @@ import * as THREE from "./vendor/three.module.min.js";
     })
   );
   globe.add(core);
-
-  if (sectionKey === "projects") {
-    const diskMaterial = new THREE.MeshBasicMaterial({ color: 0xa77bea, transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false });
-    const disk = new THREE.Mesh(new THREE.TorusGeometry(2.02, 0.055, 12, 180), diskMaterial);
-    disk.rotation.set(1.12, 0.26, -0.2);
-    globe.add(disk);
-    const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0x8d5fd6, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false }));
-    diskGlow.rotation.copy(disk.rotation);
-    globe.add(diskGlow);
-  }
 
   function makeGlowTexture() {
     const surface = document.createElement("canvas");
@@ -191,7 +181,6 @@ import * as THREE from "./vendor/three.module.min.js";
     nodeGroup.clear();
     nodes.length = 0;
     items.forEach((item, index) => {
-      if (sectionKey === "education") return;
       const point = pointOnSphere(index, items.length);
       const color = colors[index % colors.length];
       const material = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.65, roughness: 0.25, metalness: 0.08, toneMapped: false });
@@ -312,7 +301,9 @@ import * as THREE from "./vendor/three.module.min.js";
   buildNodes();
   if (label) label.textContent = `${items.length} ${sectionKey === "projects" ? "project signals" : "learning signals"} · drag the globe or choose a name`;
   let previousTime = 0;
+  let running = false;
   function render(time) {
+    if (!running) return;
     if (!reducedMotion && !dragging) {
       const delta = Math.min(time - (previousTime || time), 48);
       universe.rotation.y += delta * 0.00005;
@@ -323,8 +314,23 @@ import * as THREE from "./vendor/three.module.min.js";
     stage.classList.add("is-webgl-ready");
     frameId = requestAnimationFrame(render);
   }
-  frameId = requestAnimationFrame(render);
-  window.addEventListener("pagehide", () => cancelAnimationFrame(frameId), { once: true });
+  function startRendering() {
+    if (running) return;
+    running = true;
+    previousTime = 0;
+    frameId = requestAnimationFrame(render);
+  }
+  window.addEventListener("pagehide", () => {
+    running = false;
+    cancelAnimationFrame(frameId);
+  });
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      resize();
+      startRendering();
+    }
+  });
+  startRendering();
   complementFromGitHub();
 })();
 
