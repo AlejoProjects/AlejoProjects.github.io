@@ -3,51 +3,98 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Alejo | Personal Signal</title>
-    <meta name="description" content="A personal page for projects, profile, and education.">
+    <meta name="theme-color" content="#071719">
+    <title>Alejo | MLOps and software</title>
+    <meta name="description" content="Alejo's portfolio: MLOps, software, machine learning, and scientific computing.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="refresh.css">
   </head>
   <body class="home-page">
-    <main class="computer-stage" aria-label="Main navigation">
-      <section class="computer" aria-label="Old computer interface">
-        <div class="computer-shell">
-          <div class="speaker-strip" aria-hidden="true"></div>
-          <div class="crt-frame">
-            <div class="crt-screen">
-              <div class="screen-content">
-                <p class="bootline">PERSONAL_PAGE.EXE</p>
-                <h1 id="slide-title">Projects</h1>
-                <p id="slide-copy">
-                  Repositories, experiments, and technical things that became real enough to keep.
-                </p>
-                <a id="slide-link" class="screen-button" href="projects.html">Open Projects</a>
-              </div>
-              <button class="screen-arrow screen-arrow-left" type="button" aria-label="Previous section">&lsaquo;</button>
-              <button class="screen-arrow screen-arrow-right" type="button" aria-label="Next section">&rsaquo;</button>
-              <div class="screen-dots" aria-label="Choose a section">
-                <button class="screen-dot is-active" type="button" aria-label="Projects"></button>
-                <button class="screen-dot" type="button" aria-label="Profile"></button>
-                <button class="screen-dot" type="button" aria-label="Education"></button>
-              </div>
-              <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">
-                Music off
-              </button>
-              <audio id="home-track" src="Gravity_s_Edge.mp3" preload="metadata" loop></audio>
+    <header class="site-header">
+      <a class="site-mark" href="index.html" aria-label="Alejo home">ALEJO<span> / SYSTEMS</span></a>
+      <nav class="top-nav home-nav" aria-label="Main navigation">
+        <a class="is-current" href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="interests.html">Profile</a>
+        <a href="education.html">Education</a>
+      </nav>
+      <a class="header-contact" href="#contact">Get in touch <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">MLOps / software / scientific computing</p>
+          <h1 id="hero-title">Building dependable systems around machine learning.</h1>
+          <p class="hero-lede">I work across software, data, and platform operations to help machine learning move from experiments into reliable tools.</p>
+          <div class="hero-actions">
+            <a class="action-button action-primary" href="projects.html">Explore projects</a>
+            <a class="action-button action-secondary" href="#current-work">Current work <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="hero-note">Currently supporting MLOps workflows across Kubernetes, observability, and delivery.</p>
+        </div>
+
+        <div class="hero-art-wrap">
+          <div class="hero-art-frame" data-spline-url="" aria-label="Surreal landscape scene">
+            <img class="hero-art-image" src="ASSETS/hero-landscape.svg" alt="Teal and golden fabric streams above a misty mountain shore while birds cross the sky.">
+            <span class="scene-sun" aria-hidden="true"></span>
+            <div class="scene-caption">
+              <span>Systems in motion</span>
+              <span>Machine learning / operations</span>
             </div>
           </div>
-          <div class="computer-foot">
-            <div class="drive-slot" aria-hidden="true"></div>
-            <div class="power-light" aria-hidden="true"></div>
-          </div>
+          <p class="scene-footnote">A small study in flow, signal, and structure.</p>
         </div>
-        <div class="keyboard" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span>
+      </section>
+
+      <section class="work-section" id="current-work" aria-labelledby="work-title">
+        <div class="work-heading">
+          <div>
+            <p class="eyebrow">Current work</p>
+            <h2 id="work-title">MLOps internship</h2>
+          </div>
+          <p>Supporting the systems and workflows that help machine learning teams ship and operate their work.</p>
+        </div>
+        <div class="work-grid">
+          <article class="work-item">
+            <p class="work-label">Platform</p>
+            <h3>Kubernetes and Helm</h3>
+            <p>Resolve platform tickets, support MLOps workflows, and work with Helm charts in Kubernetes environments.</p>
+          </article>
+          <article class="work-item">
+            <p class="work-label">Observability</p>
+            <h3>Grafana and Datadog</h3>
+            <p>Investigate tickets using monitoring and observability tools, helping teams understand system behavior.</p>
+          </article>
+          <article class="work-item">
+            <p class="work-label">Delivery</p>
+            <h3>Go and canary tests</h3>
+            <p>Make Go code edits and support canary testing as part of day-to-day MLOps operations.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="next-section" aria-labelledby="next-title">
+        <p class="eyebrow">Outside the day-to-day</p>
+        <div class="next-content">
+          <h2 id="next-title">Physics, software, and machine learning meet in the details.</h2>
+          <div>
+            <p>Explore the projects, studies, and interests behind my work.</p>
+            <div class="next-links">
+              <a href="projects.html">View projects <span aria-hidden="true">↗</span></a>
+              <a href="interests.html">Read my profile <span aria-hidden="true">↗</span></a>
+              <a href="education.html">See what I’m learning <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
         </div>
       </section>
     </main>
-    <script src="content.js"></script>
-    <script src="audio.js"></script>
-    <script src="home.js"></script>
+
+    <footer class="site-footer" id="contact">
+      <a class="site-mark" href="index.html">ALEJO<span> / SYSTEMS</span></a>
+      <p>Thanks for stopping by.</p>
+      <a href="https://github.com/AlejoProjects" target="_blank" rel="noreferrer">GitHub profile <span aria-hidden="true">↗</span></a>
+    </footer>
+    <script src="hero-motion.js"></script>
   </body>
 </html>
