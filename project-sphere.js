@@ -17,7 +17,7 @@ import * as THREE from "./vendor/three.module.min.js";
   const link = document.querySelector("#detail-link");
   const art = document.querySelector("#project-art");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const colors = [0xd5aa52, 0x5dd1c4, 0xe58e67, 0xa6b5d8, 0xeee0bb];
+  const colors = [0xffae63, 0x63e6db, 0xff78b7, 0xb99aff, 0xf6d978, 0x80dfad];
 
   let renderer;
   try {
@@ -51,18 +51,56 @@ import * as THREE from "./vendor/three.module.min.js";
   const globe = new THREE.Group();
   universe.add(globe);
 
+  function makeCoreTexture() {
+    const surface = document.createElement("canvas");
+    surface.width = 512;
+    surface.height = 256;
+    const paint = surface.getContext("2d");
+    const background = paint.createLinearGradient(0, 0, 0, surface.height);
+    const stops = [
+      [0, "#173449"], [.17, "#090e21"], [.36, "#02040c"],
+      [.55, "#120919"], [.73, "#44253d"], [.88, "#bd784f"], [1, "#160e23"]
+    ];
+    stops.forEach(([at, color]) => background.addColorStop(at, color));
+    paint.fillStyle = background;
+    paint.fillRect(0, 0, surface.width, surface.height);
+    for (let band = 0; band < 9; band += 1) {
+      const y = 166 + band * 5;
+      paint.beginPath();
+      paint.moveTo(-20, y);
+      paint.bezierCurveTo(128, y - 26, 294, y + 22, 532, y - 13);
+      paint.strokeStyle = band % 3 === 0 ? "rgba(255,192,119,.24)" : "rgba(142,90,148,.16)";
+      paint.lineWidth = band % 3 === 0 ? 3 : 2;
+      paint.stroke();
+    }
+    const texture = new THREE.CanvasTexture(surface);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+    return texture;
+  }
+
   const core = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.8, 5),
     new THREE.MeshPhysicalMaterial({
-      color: 0x103b3a,
-      metalness: 0.3,
-      roughness: 0.42,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.24,
-      transmission: 0.06
+      map: makeCoreTexture(),
+      metalness: 0.24,
+      roughness: 0.48,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.3,
+      emissive: 0x241325,
+      emissiveIntensity: 0.2
     })
   );
   globe.add(core);
+
+  const diskMaterial = new THREE.MeshBasicMaterial({ color: 0xe59b6c, transparent: true, opacity: 0.5, side: THREE.DoubleSide, depthWrite: false });
+  const disk = new THREE.Mesh(new THREE.TorusGeometry(2.02, 0.055, 12, 180), diskMaterial);
+  disk.rotation.set(1.12, 0.26, -0.2);
+  globe.add(disk);
+  const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0xe780a3, transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false }));
+  diskGlow.rotation.copy(disk.rotation);
+  globe.add(diskGlow);
 
   const wire = new THREE.LineSegments(
     new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.82, 2)),
@@ -121,7 +159,20 @@ import * as THREE from "./vendor/three.module.min.js";
   starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starPositions, 3));
   scene.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xe5d5b4, size: 0.025, transparent: true, opacity: 0.72 })));
 
-  const nodeGeometry = new THREE.SphereGeometry(0.068, 16, 12);
+  function makeGlowTexture() {
+    const surface = document.createElement("canvas");
+    surface.width = surface.height = 64;
+    const paint = surface.getContext("2d");
+    const glow = paint.createRadialGradient(32, 32, 2, 32, 32, 32);
+    glow.addColorStop(0, "rgba(255,255,255,1)");
+    glow.addColorStop(.18, "rgba(255,255,255,.7)");
+    glow.addColorStop(1, "rgba(255,255,255,0)");
+    paint.fillStyle = glow;
+    paint.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(surface);
+  }
+  const glowTexture = makeGlowTexture();
+  const nodeGeometry = new THREE.SphereGeometry(0.075, 16, 12);
   const nodes = [];
   const nodeGroup = new THREE.Group();
   globe.add(nodeGroup);
@@ -174,13 +225,15 @@ import * as THREE from "./vendor/three.module.min.js";
     nodes.forEach((node, nodeIndex) => {
       const active = nodeIndex === selectedIndex;
       node.scale.setScalar(active ? 1.62 : 1);
-      node.material.emissiveIntensity = active ? 2.2 : 0.65;
+      node.material.emissiveIntensity = active ? 3.1 : 1.65;
+      node.children[0].material.opacity = active ? .92 : .72;
     });
   }
 
   function buildNodes() {
     nodeGroup.children.forEach((child) => {
       if (child.geometry && child.geometry !== nodeGeometry) child.geometry.dispose();
+      child.children.forEach((part) => part.material?.dispose());
       if (child.material) {
         if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose());
         else child.material.dispose();
@@ -191,8 +244,12 @@ import * as THREE from "./vendor/three.module.min.js";
     sphereLinks.length = 0;
     items.forEach((item, index) => {
       const point = pointOnSphere(index, items.length);
-      const material = new THREE.MeshStandardMaterial({ color: colors[index % colors.length], emissive: colors[index % colors.length], emissiveIntensity: 0.65, roughness: 0.3, metalness: 0.24 });
+      const color = colors[index % colors.length];
+      const material = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.65, roughness: 0.25, metalness: 0.08, toneMapped: false });
       const node = new THREE.Mesh(nodeGeometry, material);
+      const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture, color, transparent: true, opacity: .72, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false }));
+      aura.scale.set(.58, .58, 1);
+      node.add(aura);
       node.position.copy(point);
       node.userData.index = index;
       nodeGroup.add(node);
