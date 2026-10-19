@@ -3,65 +3,79 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#071719">
     <title>Profile | Alejo</title>
-    <meta name="description" content="Profile page for Alejo: physics, full-stack development, AI, science, books, and creative work.">
+    <meta name="description" content="Alejo's profile: MLOps, physics, software, and machine learning.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="refresh.css">
   </head>
   <body class="profile-page">
-    <main class="profile-shell">
-      <nav class="top-nav profile-nav" aria-label="Site navigation">
-        <a href="index.html">CRT</a>
+    <header class="site-header">
+      <a class="site-mark" href="index.html" aria-label="Alejo home">ALEJO<span> / SYSTEMS</span></a>
+      <nav class="top-nav home-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
         <a href="projects.html">Projects</a>
         <a class="is-current" href="interests.html">Profile</a>
         <a href="education.html">Education</a>
       </nav>
+      <a class="header-contact" href="index.html#contact">Get in touch <span aria-hidden="true">↗</span></a>
+    </header>
 
+    <main class="profile-shell">
       <section class="profile-copy" aria-labelledby="profile-title">
-        <p class="eyebrow">COSMIC_EXPLORER.PROFILE</p>
-        <h1 id="profile-title">Alejo Gomez Serrato</h1>
-        <p>
-          Bilingual physicist and full-stack developer focused on data science,
-          scientific machine learning, generative AI, and software that turns
-          mathematical models into usable tools.
-        </p>
-        <p>
-          My orbit mixes AI agents, development, science, astronomy, books,
-          improvisation, creating strange interfaces, and learning how complex
-          systems behave when they become interactive.
-        </p>
-        <div class="profile-tags" aria-label="Interests">
-          <span>AI</span>
-          <span>Development</span>
-          <span>Science</span>
-          <span>Books</span>
+        <p class="eyebrow">Software / physics / machine learning</p>
+        <h1 id="profile-title">Alejo Gómez Serrato</h1>
+        <p>Physics student and software developer interested in the infrastructure that makes machine learning useful. My work brings together scientific computing, applied ML, and practical software engineering.</p>
+        <p>I enjoy exploring astronomy, books, improvisation, and the strange interfaces where complex systems become easier to understand.</p>
+
+        <section class="profile-experience" aria-labelledby="experience-title">
+          <p class="eyebrow">Current experience</p>
+          <h2 id="experience-title">MLOps internship</h2>
+          <p>I support MLOps operations by working through tickets and assisting with the tools and release practices used by the team.</p>
+          <ul class="experience-list">
+            <li>Kubernetes platform support and Helm chart work</li>
+            <li>Monitoring and ticket investigation with Grafana and Datadog</li>
+            <li>Go code edits and support for canary tests</li>
+          </ul>
+        </section>
+
+        <div class="profile-tags" aria-label="Areas of interest">
+          <span>MLOps</span>
+          <span>Machine learning</span>
+          <span>Scientific computing</span>
+          <span>Software engineering</span>
           <span>Astronomy</span>
-          <span>Improvisation</span>
-          <span>Creating</span>
         </div>
         <div class="profile-stats" aria-label="Profile highlights">
           <article>
-            <strong>Physics</strong>
-            <span>Universidad Nacional de Colombia</span>
+            <strong>Study</strong>
+            <span>Physics, Universidad Nacional de Colombia</span>
           </article>
           <article>
-            <strong>Stack</strong>
-            <span>Python, JavaScript, React, Node, SQL</span>
+            <strong>Working tools</strong>
+            <span>Kubernetes, Helm, Go, Grafana, Datadog</span>
           </article>
           <article>
-            <strong>Focus</strong>
-            <span>RAG, agents, ML, astronomy pipelines</span>
+            <strong>Languages</strong>
+            <span>English and Spanish</span>
           </article>
         </div>
+        <a class="profile-link" href="https://github.com/AlejoProjects" target="_blank" rel="noreferrer">Explore my GitHub <span aria-hidden="true">↗</span></a>
       </section>
 
-      <section class="avatar-stage" aria-label="Pixel avatar">
+      <section class="avatar-stage" aria-label="Alejo's pixel portrait">
         <div class="orbit-ring orbit-ring-one" aria-hidden="true"></div>
         <div class="orbit-ring orbit-ring-two" aria-hidden="true"></div>
         <div class="float-base" aria-hidden="true"></div>
         <div class="hover-light" aria-hidden="true"></div>
-        <img class="profile-avatar" src="ASSETS/pixel_model.png" alt="Pixel version of Alejo">
+        <img class="profile-avatar" src="ASSETS/pixel_model.png" alt="Pixel-art portrait of Alejo">
+        <p class="avatar-caption">Curious by nature. Building with care.</p>
       </section>
     </main>
-    <script src="audio.js"></script>
+    <footer class="site-footer">
+      <a class="site-mark" href="index.html">ALEJO<span> / SYSTEMS</span></a>
+      <p>Physics, software, and machine learning.</p>
+      <a href="projects.html">Explore projects <span aria-hidden="true">↗</span></a>
+    </footer>
   </body>
 </html>
