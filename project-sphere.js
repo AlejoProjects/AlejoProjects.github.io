@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./vendor/three.module.min.js";
 
 (() => {
   const canvas = document.querySelector("#project-sphere");
@@ -324,9 +324,11 @@ import * as THREE from "three";
     }
     previousTime = time;
     renderer.render(scene, camera);
+    stage.classList.add("is-webgl-ready");
     frameId = requestAnimationFrame(render);
   }
   frameId = requestAnimationFrame(render);
   window.addEventListener("pagehide", () => cancelAnimationFrame(frameId), { once: true });
   complementFromGitHub();
 })();
+
