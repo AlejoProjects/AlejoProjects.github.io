@@ -47,7 +47,7 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
 .next-links summary::after { content: "+"; float: right; color: #e9bd68; }
 .next-links details[open] summary::after { content: "−"; }
 .next-links details p { color: #b8c5bb; line-height: 1.6; }
-.next-links details a { color: #dfba63; }
+.next-links details a { display: inline; padding: 0; border: 0; color: #dfba63; }
 
 .avatar-stage { min-height: 430px; }
 .profile-avatar { width: min(310px, 62vw); max-height: 390px; object-fit: contain; }
