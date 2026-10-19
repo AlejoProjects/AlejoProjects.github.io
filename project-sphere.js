@@ -51,71 +51,57 @@ import * as THREE from "./vendor/three.module.min.js";
   const globe = new THREE.Group();
   universe.add(globe);
 
-  function makeCoreTexture() {
-    const surface = document.createElement("canvas");
-    surface.width = 1024;
-    surface.height = 512;
-    const paint = surface.getContext("2d");
-    const background = paint.createLinearGradient(0, 0, 0, surface.height);
-    const stops = [
-      [0, "#182b4b"], [.18, "#352448"], [.34, "#100d28"],
-      [.49, "#030510"], [.59, "#321329"], [.73, "#9e4b45"],
-      [.88, "#edaa67"], [1, "#241537"]
-    ];
-    stops.forEach(([at, color]) => background.addColorStop(at, color));
-    paint.fillStyle = background;
-    paint.fillRect(0, 0, surface.width, surface.height);
-    const amberGlow = paint.createRadialGradient(750, 380, 12, 750, 380, 380);
-    amberGlow.addColorStop(0, "rgba(255,194,112,.62)");
-    amberGlow.addColorStop(1, "rgba(255,194,112,0)");
-    paint.fillStyle = amberGlow;
-    paint.fillRect(0, 0, surface.width, surface.height);
-    const violetGlow = paint.createRadialGradient(190, 145, 10, 190, 145, 340);
-    violetGlow.addColorStop(0, "rgba(117,97,198,.42)");
-    violetGlow.addColorStop(1, "rgba(117,97,198,0)");
-    paint.fillStyle = violetGlow;
-    paint.fillRect(0, 0, surface.width, surface.height);
-    for (let band = 0; band < 16; band += 1) {
-      const y = 300 + band * 9;
-      paint.beginPath();
-      paint.moveTo(-30, y);
-      paint.bezierCurveTo(270, y - 44, 600, y + 46, 1054, y - 28);
-      paint.strokeStyle = band % 3 === 0 ? "rgba(255,211,143,.53)" : "rgba(235,133,174,.32)";
-      paint.lineWidth = band % 3 === 0 ? 5 : 3;
-      paint.stroke();
-    }
-    const shadow = paint.createRadialGradient(500, 255, 20, 500, 255, 190);
-    shadow.addColorStop(0, "rgba(0,0,8,.95)");
-    shadow.addColorStop(.55, "rgba(1,2,12,.68)");
-    shadow.addColorStop(1, "rgba(1,2,12,0)");
-    paint.fillStyle = shadow;
-    paint.fillRect(0, 0, surface.width, surface.height);
-    const texture = new THREE.CanvasTexture(surface);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
-    return texture;
-  }
-
-  const coreTexture = makeCoreTexture();
   const core = new THREE.Mesh(
     new THREE.SphereGeometry(1.8, 96, 64),
-    new THREE.MeshStandardMaterial({
-      map: coreTexture,
-      emissiveMap: coreTexture,
-      emissive: 0xffffff,
-      emissiveIntensity: 0.55,
-      metalness: 0.04,
-      roughness: 0.84
+    new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vLocal;
+        varying vec3 vViewNormal;
+        void main() {
+          vLocal = position;
+          vViewNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vLocal;
+        varying vec3 vViewNormal;
+        float hash3(vec3 p) {
+          p = fract(p * 0.3183099 + 0.1);
+          p *= 17.0;
+          return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+        }
+        float noise3(vec3 p) {
+          vec3 i = floor(p);
+          vec3 f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(mix(hash3(i), hash3(i + vec3(1.0, 0.0, 0.0)), f.x),
+                mix(hash3(i + vec3(0.0, 1.0, 0.0)), hash3(i + vec3(1.0, 1.0, 0.0)), f.x), f.y),
+            mix(mix(hash3(i + vec3(0.0, 0.0, 1.0)), hash3(i + vec3(1.0, 0.0, 1.0)), f.x),
+                mix(hash3(i + vec3(0.0, 1.0, 1.0)), hash3(i + vec3(1.0, 1.0, 1.0)), f.x), f.y), f.z);
+        }
+        void main() {
+          vec3 p = normalize(vLocal);
+          float cloud = 0.62 * noise3(p * 3.0) + 0.26 * noise3(p * 6.0) + 0.12 * noise3(p * 11.0);
+          float violet = smoothstep(0.28, 0.7, cloud);
+          vec3 color = mix(vec3(0.003, 0.002, 0.014), vec3(0.17, 0.065, 0.31), violet * 0.9);
+          float rim = pow(1.0 - max(normalize(vViewNormal).z, 0.0), 2.2);
+          color += vec3(0.12, 0.055, 0.26) * rim;
+          gl_FragColor = vec4(color, 1.0);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `
     })
   );
   globe.add(core);
 
-  const diskMaterial = new THREE.MeshBasicMaterial({ color: 0xe59b6c, transparent: true, opacity: 0.5, side: THREE.DoubleSide, depthWrite: false });
+  const diskMaterial = new THREE.MeshBasicMaterial({ color: 0xa77bea, transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false });
   const disk = new THREE.Mesh(new THREE.TorusGeometry(2.02, 0.055, 12, 180), diskMaterial);
   disk.rotation.set(1.12, 0.26, -0.2);
   globe.add(disk);
-  const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0xe780a3, transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false }));
+  const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0x8d5fd6, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false }));
   diskGlow.rotation.copy(disk.rotation);
   globe.add(diskGlow);
 
@@ -158,9 +144,8 @@ import * as THREE from "./vendor/three.module.min.js";
   }
 
   function artwork(item, index) {
-    const accent = ["#dbad53", "#54cbbc", "#de8667", "#91a8d3", "#e7dfc9"][index % 5];
     const titleText = escapeHtml(item.title).slice(0, 24);
-    return `<svg viewBox="0 0 520 300" role="img" aria-label="Abstract ${escapeHtml(item.tag || "project")} study for ${titleText}"><defs><linearGradient id="sea" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#0a2528"/><stop offset="1" stop-color="#123d3c"/></linearGradient><radialGradient id="orb"><stop stop-color="${accent}" stop-opacity=".88"/><stop offset="1" stop-color="${accent}" stop-opacity=".04"/></radialGradient></defs><rect width="520" height="300" rx="18" fill="url(#sea)"/><circle cx="350" cy="138" r="115" fill="url(#orb)"/><ellipse cx="350" cy="138" rx="146" ry="42" fill="none" stroke="${accent}" stroke-opacity=".66" stroke-width="2" transform="rotate(-22 350 138)"/><ellipse cx="350" cy="138" rx="118" ry="31" fill="none" stroke="#e7dfc9" stroke-opacity=".28" stroke-width="1" transform="rotate(27 350 138)"/><path d="M-20 245 C85 160 142 305 234 204 S386 217 544 106" fill="none" stroke="${accent}" stroke-opacity=".82" stroke-width="10"/><path d="M-10 261 C82 183 153 320 251 224 S412 223 537 126" fill="none" stroke="#dce8dd" stroke-opacity=".3" stroke-width="2"/><circle cx="350" cy="138" r="22" fill="${accent}" fill-opacity=".8"/><circle cx="350" cy="138" r="7" fill="#f5ead2"/><g fill="#f5ead2" fill-opacity=".72"><circle cx="75" cy="72" r="2"/><circle cx="180" cy="86" r="1.5"/><circle cx="450" cy="58" r="2"/><circle cx="90" cy="145" r="1.3"/></g><text x="28" y="260" fill="#f2ead8" font-family="Arial,sans-serif" font-size="13" letter-spacing="3">${escapeHtml(item.tag || "FIELD NOTE").slice(0, 22).toUpperCase()}</text></svg>`;
+    return `<svg viewBox="0 0 520 300" role="img" aria-label="Black and purple study for ${titleText}"><defs><radialGradient id="space"><stop stop-color="#251343"/><stop offset=".58" stop-color="#100b24"/><stop offset="1" stop-color="#060814"/></radialGradient><radialGradient id="void"><stop stop-color="#01020a"/><stop offset=".58" stop-color="#060713"/><stop offset=".86" stop-color="#3e256c"/><stop offset="1" stop-color="#090918"/></radialGradient></defs><rect width="520" height="300" fill="url(#space)"/><circle cx="335" cy="142" r="114" fill="url(#void)"/><ellipse cx="335" cy="142" rx="145" ry="43" fill="none" stroke="#a787e4" stroke-opacity=".58" stroke-width="3" transform="rotate(-19 335 142)"/></svg>`;
   }
 
   function showItem(index) {
