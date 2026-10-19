@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap");
+
+body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
+.site-mark span { color: #d8b65a; }
+
+/* The landing sculpture is a set of real destinations, so every floating card has a job. */
+.home-page .hero { grid-template-columns: minmax(0, 1fr) minmax(0, .95fr); min-height: 710px; }
+.home-page .hero h1 { font-size: clamp(3.5rem, 6.2vw, 6.9rem); line-height: .94; max-width: 800px; }
+.home-page .hero-copy { max-width: 760px; }
+.home-page .hero-art-frame { aspect-ratio: 1 / 1; border-radius: 46% 46% 12% 12%; background: #102f31; }
+.home-page .scene-caption { padding: 23px 36px; }
+.portal-links { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.portal-link { position: absolute; display: grid; gap: 3px; min-width: 148px; padding: 13px 16px; border: 1px solid rgba(239,220,169,.62); border-radius: 5px; background: rgba(4,25,28,.9); color: #faf4e7; text-decoration: none; box-shadow: 0 22px 42px rgba(0,0,0,.34); backdrop-filter: blur(14px); pointer-events: auto; transition: transform .3s ease, background .3s ease; }
+.portal-link:hover, .portal-link:focus-visible { transform: translateY(-8px) rotate(0deg); background: #1b4b48; }
+.portal-link small { color: #e4bd69; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; }
+.portal-link strong { font-size: 1.14rem; font-weight: 500; }
+.portal-projects { top: 15%; left: -6%; transform: rotate(-6deg); }
+.portal-profile { top: 39%; right: -7%; transform: rotate(5deg); }
+.portal-education { bottom: 14%; left: -5%; transform: rotate(-4deg); }
+.portal-link:hover, .portal-link:focus-visible { transform: translateY(-8px) rotate(0deg); }
+.scene-footnote { max-width: 520px; }
+.skill-marquee { overflow: hidden; border-block: 1px solid rgba(239,220,169,.18); background: #102c2d; }
+.skill-track { display: flex; width: max-content; animation: skill-drift 35s linear infinite; }
+.skill-track span { display: inline-flex; align-items: center; gap: 26px; padding: 17px 30px; color: #e6e8da; font-size: .78rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
+.skill-track span::after { content: "✦"; color: #c7a34e; }
+@keyframes skill-drift { to { transform: translateX(-50%); } }
+.work-section { padding-block: 120px; }
+.work-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid rgba(240,223,179,.2); border-left: 1px solid rgba(240,223,179,.2); }
+.work-item { min-height: 210px; padding: 27px; border-right: 1px solid rgba(240,223,179,.2); border-bottom: 1px solid rgba(240,223,179,.2); background: rgba(15,51,51,.47); transition: background .3s ease, transform .3s ease; }
+.work-item:hover { background: rgba(31,90,85,.68); transform: translateY(-3px); }
+.work-item:nth-child(1), .work-item:nth-child(5) { grid-column: span 2; }
+.work-item h3 { margin-top: 30px; font-size: clamp(1.25rem, 2vw, 1.9rem); font-weight: 500; }
+.work-item p:last-child { max-width: 36ch; }
+.spotlight { width: min(1296px, calc(100% - 64px)); display: grid; grid-template-columns: .8fr 1.2fr; gap: 5vw; margin: 30px auto 140px; padding-top: 90px; border-top: 1px solid rgba(240,223,179,.2); }
+.spotlight-intro h2 { font-size: clamp(2.5rem, 4vw, 5rem); font-weight: 400; line-height: 1; letter-spacing: -.045em; }
+.spotlight-intro p:last-child { max-width: 36ch; color: #b7c6bd; line-height: 1.65; }
+.spotlight-card { min-height: 440px; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(24px, 4vw, 54px); border: 1px solid rgba(240,223,179,.24); border-radius: 50% 50% 4px 4px / 22% 22% 4px 4px; background: radial-gradient(circle at 58% 30%, rgba(71,178,157,.28), transparent 36%), url("ASSETS/hero-landscape.svg") center/cover; box-shadow: inset 0 0 0 2000px rgba(2,20,23,.42), 0 35px 80px rgba(0,0,0,.2); }
+.spotlight-card h3 { max-width: 12ch; margin: 0; font-size: clamp(2rem, 4vw, 4.4rem); font-weight: 400; line-height: 1.02; }
+.spotlight-card p { max-width: 45ch; line-height: 1.6; }
+.spotlight-controls { display: flex; justify-content: space-between; gap: 12px; align-items: end; }
+.spotlight-controls a { color: #f3d184; }
+.spotlight-controls button { width: 44px; height: 44px; margin-left: 5px; border: 1px solid #e0c78d; border-radius: 50%; background: #103233; color: #f3e8d0; cursor: pointer; }
+.spotlight-controls button:hover { background: #2d6660; }
+.next-links { display: grid; }
+.next-links details { border-bottom: 1px solid rgba(240,223,179,.24); padding: 14px 0; }
+.next-links summary { cursor: pointer; color: #f2e9d6; list-style: none; font-size: 1.16rem; }
+.next-links summary::after { content: "+"; float: right; color: #e9bd68; }
+.next-links details[open] summary::after { content: "−"; }
+.next-links details p { color: #b8c5bb; line-height: 1.6; }
+.next-links details a { color: #dfba63; }
+
+.avatar-stage { min-height: 430px; }
+.profile-avatar { width: min(310px, 62vw); max-height: 390px; object-fit: contain; }
+
+/* A dimensional, moving scene stays visible when WebGL is unavailable. */
+.atlas-stage { perspective: 1000px; }
+.scene-fallback { position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; pointer-events: none; opacity: 1; transition: opacity .5s ease; }
+.atlas-stage.is-webgl-ready .scene-fallback { opacity: 0; }
+.scene-object { position: relative; width: min(64%, 450px); aspect-ratio: 1; transform-style: preserve-3d; transform: rotateX(var(--scene-x, -16deg)) rotateY(var(--scene-y, 25deg)); animation: scene-float 13s ease-in-out infinite alternate; filter: drop-shadow(0 34px 45px rgba(0,0,0,.42)); }
+.scene-core { position: absolute; inset: 18%; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #85dbbd, #155456 34%, #0a252c 73%); box-shadow: inset -30px -32px 35px rgba(0,0,0,.35), inset 20px 16px 25px rgba(227,241,199,.15), 0 0 45px rgba(51,194,171,.23); transform: translateZ(40px); }
+.scene-ring { position: absolute; inset: 10%; border: 2px solid rgba(224,183,96,.78); border-radius: 50%; box-shadow: 0 0 26px rgba(224,183,96,.3); transform-style: preserve-3d; }
+.scene-ring-one { transform: rotateX(69deg) rotateY(14deg) translateZ(55px); }
+.scene-ring-two { inset: 3%; border-color: rgba(124,221,210,.57); transform: rotateY(70deg) rotateZ(26deg) translateZ(5px); }
+.scene-ring-three { inset: 24%; border-color: rgba(255,224,168,.4); transform: rotateX(27deg) rotateY(63deg) translateZ(115px); }
+.scene-node { position: absolute; width: 19px; aspect-ratio: 1; border-radius: 50%; background: #f4cd74; box-shadow: 0 0 0 7px rgba(244,205,116,.14), 0 0 30px #f4cd74; transform: translateZ(100px); }
+.scene-node-a { top: 21%; left: 32%; }.scene-node-b { bottom: 23%; right: 14%; background: #81ebd2; }.scene-node-c { top: 44%; right: 9%; }
+@keyframes scene-float { to { transform: rotateX(calc(var(--scene-x, -16deg) + 6deg)) rotateY(calc(var(--scene-y, 25deg) + 20deg)) translateY(-12px); } }
+.atlas-stage:not(.is-webgl-ready) #project-sphere { pointer-events: none; }
+.atlas-stage:not(.is-webgl-ready) .scene-fallback { pointer-events: auto; cursor: grab; touch-action: pan-y; }
+.atlas-page .atlas-intro h1 { font-family: "Outfit", sans-serif; font-weight: 400; letter-spacing: -.06em; }
+
+@media (max-width: 950px) {
+  .home-page .hero { grid-template-columns: 1fr; }
+  .hero-art-wrap { max-width: 700px; margin-inline: auto; }
+  .work-grid { grid-template-columns: repeat(2, 1fr); }
+  .work-item:nth-child(1), .work-item:nth-child(5) { grid-column: span 2; }
+  .spotlight { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .portal-link { min-width: 110px; padding: 9px 11px; }
+  .portal-link strong { font-size: .91rem; }
+  .portal-projects { left: -1%; }.portal-profile { right: -1%; }.portal-education { left: 0; }
+  .work-grid { grid-template-columns: 1fr; }
+  .work-item, .work-item:nth-child(1), .work-item:nth-child(5) { grid-column: auto; min-height: 160px; }
+  .spotlight { width: calc(100% - 34px); }
+  .spotlight-card { min-height: 410px; }
+  .avatar-stage { min-height: 310px; }
+  .profile-avatar { width: min(230px, 65vw); max-height: 270px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-track, .scene-object { animation: none; }
+  .portal-link, .work-item { transition: none; }
+}
+
