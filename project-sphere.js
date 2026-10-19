@@ -24,7 +24,7 @@ import * as THREE from "./vendor/three.module.min.js";
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   } catch (error) {
     stage.classList.add("atlas-no-webgl");
-    if (label) label.textContent = "3D view unavailable — use the complete project index below.";
+    if (label) label.textContent = "Drag the 3D sculpture, or choose an item from the index below.";
     return;
   }
 
