@@ -84,7 +84,7 @@ import * as THREE from "./vendor/three.module.min.js";
         void main() {
           vec3 p = normalize(vLocal);
           float cloud = 0.62 * noise3(p * 3.0) + 0.26 * noise3(p * 6.0) + 0.12 * noise3(p * 11.0);
-          float violet = smoothstep(0.28, 0.7, cloud);
+          float violet = ${sectionKey === "education" ? "smoothstep(-0.9, 0.95, p.y) * 0.8 + 0.1" : "smoothstep(0.28, 0.7, cloud)"};
           vec3 color = mix(vec3(0.003, 0.002, 0.014), vec3(0.17, 0.065, 0.31), violet * 0.9);
           float rim = pow(1.0 - max(normalize(vViewNormal).z, 0.0), 2.2);
           color += vec3(0.12, 0.055, 0.26) * rim;
@@ -97,13 +97,15 @@ import * as THREE from "./vendor/three.module.min.js";
   );
   globe.add(core);
 
-  const diskMaterial = new THREE.MeshBasicMaterial({ color: 0xa77bea, transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false });
-  const disk = new THREE.Mesh(new THREE.TorusGeometry(2.02, 0.055, 12, 180), diskMaterial);
-  disk.rotation.set(1.12, 0.26, -0.2);
-  globe.add(disk);
-  const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0x8d5fd6, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false }));
-  diskGlow.rotation.copy(disk.rotation);
-  globe.add(diskGlow);
+  if (sectionKey === "projects") {
+    const diskMaterial = new THREE.MeshBasicMaterial({ color: 0xa77bea, transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false });
+    const disk = new THREE.Mesh(new THREE.TorusGeometry(2.02, 0.055, 12, 180), diskMaterial);
+    disk.rotation.set(1.12, 0.26, -0.2);
+    globe.add(disk);
+    const diskGlow = new THREE.Mesh(new THREE.TorusGeometry(2.04, 0.13, 8, 180), new THREE.MeshBasicMaterial({ color: 0x8d5fd6, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false }));
+    diskGlow.rotation.copy(disk.rotation);
+    globe.add(diskGlow);
+  }
 
   function makeGlowTexture() {
     const surface = document.createElement("canvas");
@@ -145,6 +147,9 @@ import * as THREE from "./vendor/three.module.min.js";
 
   function artwork(item, index) {
     const titleText = escapeHtml(item.title).slice(0, 24);
+    if (sectionKey === "education") {
+      return `<svg viewBox="0 0 520 300" role="img" aria-label="Purple gradient for ${titleText}"><defs><radialGradient id="study-gradient"><stop stop-color="#36205d"/><stop offset=".55" stop-color="#120d2b"/><stop offset="1" stop-color="#060814"/></radialGradient></defs><rect width="520" height="300" fill="url(#study-gradient)"/></svg>`;
+    }
     return `<svg viewBox="0 0 520 300" role="img" aria-label="Black and purple study for ${titleText}"><defs><radialGradient id="space"><stop stop-color="#251343"/><stop offset=".58" stop-color="#100b24"/><stop offset="1" stop-color="#060814"/></radialGradient><radialGradient id="void"><stop stop-color="#01020a"/><stop offset=".58" stop-color="#060713"/><stop offset=".86" stop-color="#3e256c"/><stop offset="1" stop-color="#090918"/></radialGradient></defs><rect width="520" height="300" fill="url(#space)"/><circle cx="335" cy="142" r="114" fill="url(#void)"/><ellipse cx="335" cy="142" rx="145" ry="43" fill="none" stroke="#a787e4" stroke-opacity=".58" stroke-width="3" transform="rotate(-19 335 142)"/></svg>`;
   }
 
@@ -186,6 +191,7 @@ import * as THREE from "./vendor/three.module.min.js";
     nodeGroup.clear();
     nodes.length = 0;
     items.forEach((item, index) => {
+      if (sectionKey === "education") return;
       const point = pointOnSphere(index, items.length);
       const color = colors[index % colors.length];
       const material = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.65, roughness: 0.25, metalness: 0.08, toneMapped: false });
