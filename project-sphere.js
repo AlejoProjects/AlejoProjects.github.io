@@ -119,53 +119,6 @@ import * as THREE from "./vendor/three.module.min.js";
   diskGlow.rotation.copy(disk.rotation);
   globe.add(diskGlow);
 
-  function orbit(radius, tilt, color, opacity, eccentricity = 1) {
-    const curve = new THREE.EllipseCurve(0, 0, radius, radius * eccentricity, 0, Math.PI * 2, false, 0);
-    const points = curve.getPoints(220).map((point) => new THREE.Vector3(point.x, point.y, 0));
-    const ring = new THREE.LineLoop(
-      new THREE.BufferGeometry().setFromPoints(points),
-      new THREE.LineBasicMaterial({ color, transparent: true, opacity })
-    );
-    ring.rotation.set(tilt, tilt * 0.68, tilt * -0.24);
-    universe.add(ring);
-    return ring;
-  }
-
-  orbit(2.42, 0.54, 0xd5aa52, 0.46, 0.42);
-  orbit(2.72, -0.9, 0x5dd1c4, 0.28, 0.31);
-  orbit(3.02, 0.1, 0xd6c1a0, 0.16, 0.25);
-
-  const ribbonPoints = [
-    new THREE.Vector3(-2.55, -0.3, -0.25),
-    new THREE.Vector3(-1.8, 0.85, 0.4),
-    new THREE.Vector3(-0.35, 1.15, 0.3),
-    new THREE.Vector3(1.2, 0.75, -0.15),
-    new THREE.Vector3(2.58, 0.06, 0.1)
-  ];
-  const ribbonCurve = new THREE.CatmullRomCurve3(ribbonPoints);
-  const ribbon = new THREE.Mesh(
-    new THREE.TubeGeometry(ribbonCurve, 120, 0.035, 8, false),
-    new THREE.MeshPhysicalMaterial({ color: 0xd4a348, metalness: 0.62, roughness: 0.28, transparent: true, opacity: 0.82 })
-  );
-  universe.add(ribbon);
-
-  const starPositions = [];
-  let seed = 771;
-  function random() {
-    seed = (seed * 16807) % 2147483647;
-    return (seed - 1) / 2147483646;
-  }
-  for (let i = 0; i < 720; i += 1) {
-    const radius = 4.4 + random() * 8.5;
-    const theta = random() * Math.PI * 2;
-    const z = random() * 2 - 1;
-    const planar = Math.sqrt(1 - z * z);
-    starPositions.push(radius * planar * Math.cos(theta), radius * z, radius * planar * Math.sin(theta));
-  }
-  const starGeometry = new THREE.BufferGeometry();
-  starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starPositions, 3));
-  scene.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xe5d5b4, size: 0.025, transparent: true, opacity: 0.72 })));
-
   function makeGlowTexture() {
     const surface = document.createElement("canvas");
     surface.width = surface.height = 64;
@@ -185,7 +138,6 @@ import * as THREE from "./vendor/three.module.min.js";
   globe.add(nodeGroup);
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
-  const sphereLinks = [];
   let selectedIndex = 0;
   let dragging = false;
   let moved = false;
@@ -248,7 +200,6 @@ import * as THREE from "./vendor/three.module.min.js";
     });
     nodeGroup.clear();
     nodes.length = 0;
-    sphereLinks.length = 0;
     items.forEach((item, index) => {
       const point = pointOnSphere(index, items.length);
       const color = colors[index % colors.length];
@@ -262,15 +213,6 @@ import * as THREE from "./vendor/three.module.min.js";
       nodeGroup.add(node);
       nodes.push(node);
     });
-    for (let i = 0; i < nodes.length; i += 1) {
-      const next = (i + Math.round(Math.sqrt(nodes.length))) % nodes.length;
-      const curve = new THREE.QuadraticBezierCurve3(nodes[i].position.clone(), nodes[i].position.clone().add(nodes[next].position).multiplyScalar(0.58).normalize().multiplyScalar(2.2), nodes[next].position.clone());
-      const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(18));
-      const material = new THREE.LineBasicMaterial({ color: i % 2 ? 0x4fc0b1 : 0xd5aa52, transparent: true, opacity: 0.16 });
-      const line = new THREE.Line(geometry, material);
-      nodeGroup.add(line);
-      sphereLinks.push(line);
-    }
     buildIndex();
     showItem(Math.min(selectedIndex, items.length - 1));
   }
@@ -384,7 +326,6 @@ import * as THREE from "./vendor/three.module.min.js";
       const delta = Math.min(time - (previousTime || time), 48);
       universe.rotation.y += delta * 0.00005;
       globe.rotation.y += delta * 0.000025;
-      ribbon.rotation.y = Math.sin(time * 0.00018) * 0.06;
     }
     previousTime = time;
     renderer.render(scene, camera);
