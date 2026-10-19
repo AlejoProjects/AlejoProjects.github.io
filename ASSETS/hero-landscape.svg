@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Teal and gold ribbons over a misty shore</title>
+  <desc id="desc">An original surreal landscape of flowing teal and ochre fabric, distant mountains, birds, cloud, and dark water.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.88" y2="1">
+      <stop offset="0" stop-color="#b7c0b7"/>
+      <stop offset=".43" stop-color="#617c7a"/>
+      <stop offset="1" stop-color="#183b3d"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#d7d6c8" stop-opacity=".78"/>
+      <stop offset=".48" stop-color="#b7c2b7" stop-opacity=".13"/>
+      <stop offset="1" stop-color="#d3cdb6" stop-opacity=".58"/>
+    </linearGradient>
+    <linearGradient id="mountain" x1="0" y1="0" x2=".8" y2="1">
+      <stop stop-color="#476866"/>
+      <stop offset=".42" stop-color="#253d3d"/>
+      <stop offset="1" stop-color="#101f23"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#304f50"/>
+      <stop offset=".24" stop-color="#152d31"/>
+      <stop offset="1" stop-color="#071519"/>
+    </linearGradient>
+    <linearGradient id="teal-silk" x1=".04" y1=".16" x2=".93" y2=".8">
+      <stop stop-color="#0c4c52"/>
+      <stop offset=".27" stop-color="#15918b"/>
+      <stop offset=".49" stop-color="#36b9ae"/>
+      <stop offset=".72" stop-color="#087078"/>
+      <stop offset="1" stop-color="#123b43"/>
+    </linearGradient>
+    <linearGradient id="gold-silk" x1="0" y1=".1" x2="1" y2=".85">
+      <stop stop-color="#9c5f24"/>
+      <stop offset=".32" stop-color="#d49617"/>
+      <stop offset=".55" stop-color="#f0bd38"/>
+      <stop offset=".76" stop-color="#b87918"/>
+      <stop offset="1" stop-color="#663c26"/>
+    </linearGradient>
+    <linearGradient id="silk-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#d9ece1" stop-opacity=".08"/>
+      <stop offset=".48" stop-color="#f1eee0" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#8fcac0" stop-opacity=".12"/>
+    </linearGradient>
+    <radialGradient id="sun-glow">
+      <stop stop-color="#ede1c4" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#ede1c4" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+    <filter id="silk-shadow" x="-20%" y="-30%" width="150%" height="170%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="blur"/>
+      <feOffset dy="18" result="offset"/>
+      <feColorMatrix in="offset" type="matrix" values="0 0 0 0 0.015 0 0 0 0 0.08 0 0 0 0 0.085 0 0 0 .55 0"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .teal-flow { animation: teal-drift 13s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+      .gold-flow { animation: gold-drift 11s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+      .flock { animation: flock-drift 24s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+      .water-glint { animation: glint 8s ease-in-out infinite alternate; }
+      @keyframes teal-drift { from { transform: translate(-7px, 7px) rotate(-.5deg); } to { transform: translate(12px, -10px) rotate(.4deg); } }
+      @keyframes gold-drift { from { transform: translate(9px, -5px) rotate(.3deg); } to { transform: translate(-12px, 11px) rotate(-.4deg); } }
+      @keyframes flock-drift { from { transform: translate(-18px, 7px); } to { transform: translate(26px, -15px); } }
+      @keyframes glint { from { opacity: .18; } to { opacity: .42; } }
+      @media (prefers-reduced-motion: reduce) {
+        .teal-flow, .gold-flow, .flock, .water-glint { animation: none !important; }
+      }
+    </style>
+  </defs>
+  <rect width="1400" height="900" fill="url(#sky)"/>
+  <ellipse cx="1040" cy="200" rx="420" ry="260" fill="url(#sun-glow)"/>
+  <path d="M0 250C170 175 260 215 422 188s250-91 386-54 180 73 276 47 209-62 316-18v240H0z" fill="#e0ddd0" opacity=".29" filter="url(#soft-blur)"/>
+  <path d="M0 400c170-72 300-17 455-78s257-109 423-48 276 62 522-20v234H0z" fill="url(#mist)" opacity=".55"/>
+  <path d="M0 567 167 475l116 42 168-186 113 133 177-222 172 246 144-106 158 185 185-111v290H0z" fill="url(#mountain)" opacity=".88"/>
+  <path d="m0 603 177-104 102 50 171-158 136 143 146-191 166 184 113-87 154 154 135-83v184H0z" fill="#182f32" opacity=".76"/>
+  <path d="M0 623c174-23 304-6 455 1s279 9 423-4 286-26 522 2v278H0z" fill="url(#water)"/>
+  <g class="water-glint" fill="none" stroke="#abc2b7" stroke-linecap="round">
+    <path d="M0 680c168-9 246 8 388 2s260-20 407-8 292 21 605 3" stroke-width="2" opacity=".3"/>
+    <path d="M72 732c153-6 245 8 389 0m244 1c190-10 303 9 529 0" stroke-width="1.5" opacity=".28"/>
+    <path d="M12 793c214-14 353 8 493 2s281-19 429-7 277 15 466 5" stroke-width="2" opacity=".22"/>
+    <path d="M160 844c186-4 295 7 447-2m249 0c135-6 234 5 406 1" stroke-width="1.4" opacity=".23"/>
+  </g>
+  <g class="teal-flow" filter="url(#silk-shadow)">
+    <path d="M-66 127C101 81 176 52 295 88c151 45 153 190 313 216 188 31 284-95 450-75 140 17 231 75 408 47v151c-173 19-253-38-411-32-187 7-283 142-466 113-207-34-212-190-370-190-89 0-171 64-285 106z" fill="url(#teal-silk)" opacity=".96"/>
+    <path d="M-48 171c153-55 233-87 345-52 155 47 164 187 323 216 175 32 293-82 443-64 146 18 232 75 392 47" fill="none" stroke="url(#silk-edge)" stroke-width="5" opacity=".68"/>
+    <path d="M-35 209c156-58 234-85 340-50 146 48 164 181 323 213 177 36 293-77 448-54 135 20 221 70 373 43" fill="none" stroke="#c1e1d4" stroke-width="1.5" opacity=".48"/>
+  </g>
+  <g class="gold-flow" filter="url(#silk-shadow)">
+    <path d="M-104 405c188-151 275-174 396-110 123 66 144 206 298 259 177 61 291-18 443-6 120 9 216 73 410 75v151c-169-17-248-88-411-87-178 2-291 79-466 22-188-61-191-231-329-244-91-9-185 57-303 148z" fill="url(#gold-silk)" opacity=".94"/>
+    <path d="M-59 444c154-126 241-164 345-112 136 67 146 199 301 251 165 55 286-16 441-2 134 11 229 78 414 81" fill="none" stroke="#f7dd8c" stroke-width="4" opacity=".56"/>
+    <path d="M-40 486c157-130 236-155 339-102 133 68 157 200 302 245 167 53 289-12 439 6" fill="none" stroke="#784922" stroke-width="2" opacity=".46"/>
+  </g>
+  <g class="flock" fill="#101b1e" opacity=".9">
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(748 170) scale(1.15)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(817 129) scale(.82)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(864 208) scale(.68)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(914 156) scale(1.05)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(965 220) scale(.75)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(1024 177) scale(.9)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(1081 243) scale(.62)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(1132 195) scale(.77)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(1193 264) scale(.58)"/>
+    <path d="M0 0c10-11 17-10 25 1 8-11 15-12 25-3-5 1-10 4-14 9-5-4-11-5-16-1C13 1 7 0 0 0Z" transform="translate(1252 218) scale(.73)"/>
+  </g>
+  <rect width="1400" height="900" fill="url(#sky)" opacity=".08"/>
+</svg>
