@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="refresh.css">
     <link rel="stylesheet" href="atlas.css">
-    <link rel="stylesheet" href="renovation.css?v=20261019-education-gradient">
+    <link rel="stylesheet" href="renovation.css?v=20261019-stable-globes">
   </head>
   <body class="atlas-page learning-atlas" data-section="education">
     <header class="site-header">
@@ -40,9 +40,9 @@
           <div class="atlas-stage" id="atlas-stage">
             <div class="atlas-halo atlas-halo-one" aria-hidden="true"></div>
             <div class="atlas-halo atlas-halo-two" aria-hidden="true"></div>
-            <div class="scene-fallback" aria-hidden="true"><div class="scene-object"><div class="scene-core"></div></div></div>
-            <canvas id="project-sphere" aria-label="Three-dimensional black and purple gradient globe. Drag to rotate; choose a topic from the index below."></canvas>
-            <p class="atlas-stage-hint"><span class="drag-glyph" aria-hidden="true">◎</span> Drag to turn the globe; choose a topic below</p>
+            <div class="scene-fallback" aria-hidden="true"><div class="scene-object"><div class="scene-core"></div><div class="scene-node scene-node-a"></div><div class="scene-node scene-node-b"></div><div class="scene-node scene-node-c"></div></div></div>
+            <canvas id="project-sphere" aria-label="Three-dimensional black and purple globe of learning topics. Drag to rotate and select a glowing point."></canvas>
+            <p class="atlas-stage-hint"><span class="drag-glyph" aria-hidden="true">◎</span> Drag to turn the globe; select a point or topic below</p>
             <button id="atlas-reset" class="atlas-reset" type="button" aria-label="Reset globe rotation">Reset view</button>
           </div>
           <div class="atlas-statusline"><span class="status-light" aria-hidden="true"></span><span id="atlas-status" aria-live="polite">Preparing the education globe…</span></div>
@@ -53,7 +53,7 @@
           <div class="project-detail-copy">
             <p class="detail-kicker" id="detail-kicker">LEARNING SIGNAL</p>
             <h2 id="detail-title">Select a topic</h2>
-            <p id="detail-copy">Choose a topic from the index below to see its details.</p>
+            <p id="detail-copy">Select a glowing point or choose a topic from the index below.</p>
             <a id="detail-link" class="project-open-link" href="https://github.com/AlejoProjects" target="_blank" rel="noreferrer">Open resource <span aria-hidden="true">↗</span></a>
           </div>
           <span class="detail-index" aria-hidden="true">LEARNING / A—Z</span>
@@ -76,9 +76,9 @@
     </footer>
 
     <script src="content.js"></script>
-    <script src="atlas-fallback.js?v=20261019-education-gradient"></script>
+    <script src="atlas-fallback.js?v=20261019-stable-globes"></script>
     <script src="scene-fallback.js"></script>
-    <script type="module" src="project-sphere.js?v=20261019-education-gradient"></script>
+    <script type="module" src="project-sphere.js?v=20261019-stable-globes"></script>
   </body>
 </html>
 
