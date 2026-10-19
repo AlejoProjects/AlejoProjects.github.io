@@ -247,7 +247,7 @@ import * as THREE from "./vendor/three.module.min.js";
       const color = colors[index % colors.length];
       const material = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.65, roughness: 0.25, metalness: 0.08, toneMapped: false });
       const node = new THREE.Mesh(nodeGeometry, material);
-      const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture, color, transparent: true, opacity: .72, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false }));
+      const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture, color, transparent: true, opacity: .72, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: true }));
       aura.scale.set(.58, .58, 1);
       node.add(aura);
       node.position.copy(point);
