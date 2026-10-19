@@ -1,35 +1,26 @@
-# Personal Page
+# Personal webpage
 
-Static personal site ready for GitHub Pages. No build step is required.
+Alejo's static portfolio, published with GitHub Pages. No build step is required.
 
-## Main Files
+## Pages and content
 
-- `index.html`: CRT-style main menu.
-- `projects.html`: animated project node graph.
-- `interests.html`: Profile page.
-- `education.html`: animated education node graph.
-- `content.js`: editable projects, education items, and GitHub username.
-- `styles.css`: colors, layout, responsive behavior, and profile visuals.
-- `network.js`: node graph, tubes, charges, stars, and background assets.
-- `Gravity_s_Edge.mp3`: home-page music track.
+- `index.html`: introduction, MLOps work, project spotlight, and navigation.
+- `projects.html`: interactive 3D project globe and complete project index.
+- `education.html`: interactive 3D learning globe and complete education index.
+- `interests.html`: personal profile.
+- `content.js`: curated project and education entries, plus the GitHub username used to append public repositories.
 
-## Edit Content
+## Design and motion
 
-Open `content.js`.
+- `refresh.css`, `atlas.css`, and `renovation.css`: page styles and responsive layouts.
+- `hero-motion.js`, `renovation.js`, and `project-sphere.js`: interaction, GSAP scroll motion, and the Three.js globe.
+- `scene-fallback.js`: draggable CSS 3D sculpture when WebGL is unavailable.
+- `ASSETS/hero-landscape.svg`: original surreal landscape used throughout the site.
+- `ASSETS/profile-banner.svg`: shorter crop for the GitHub profile README.
+- `vendor/`: local Three.js and GSAP browser bundles. Keep their license headers when updating.
 
-- `profile.githubUsername`: GitHub username used to load public non-fork repos on `projects.html`.
-- `sections.projects.items`: manual project fallback items.
-- `sections.education.items`: courses, certificates, learning paths, and notes.
+Motion respects reduced-motion settings. The project and education indexes remain usable without WebGL or JavaScript module support.
 
-Open `interests.html` to edit the Profile text, interests, highlights, or avatar.
+## Editing
 
-## Publish On GitHub Pages
-
-1. Create a GitHub repository.
-2. Upload/push all files in this folder, including `ASSETS/`, `.nojekyll`, and `Gravity_s_Edge.mp3`.
-3. In GitHub, go to `Settings > Pages`.
-4. Set `Source` to `Deploy from a branch`.
-5. Select your main branch and `/root`.
-6. Save and wait for the Pages URL to appear.
-
-The site uses relative paths, so it works both at the root domain and inside a project path.
+Update `content.js` to change the curated project and education entries. Update the copy in the page HTML files for the introduction, internship, and profile. GitHub Pages serves the files from the repository root.
