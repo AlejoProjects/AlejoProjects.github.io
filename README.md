@@ -13,7 +13,7 @@ Alejo's static portfolio, published with GitHub Pages. No build step is required
 ## Design and motion
 
 - `refresh.css`, `atlas.css`, and `renovation.css`: page styles and responsive layouts.
-- `hero-motion.js`, `renovation.js`, and `project-sphere.js`: interaction, GSAP scroll motion, and the Three.js globe.
+- `hero-motion.js`, `renovation.js`, and `orbit-scene.js`: interaction, GSAP scroll motion, and the Three.js globe.
 - `scene-fallback.js`: draggable CSS 3D sculpture when WebGL is unavailable.
 - `ASSETS/hero-landscape.svg`: original surreal landscape used throughout the site.
 - `ASSETS/profile-banner.svg`: shorter crop for the GitHub profile README.
