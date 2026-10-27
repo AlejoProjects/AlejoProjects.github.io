@@ -59,6 +59,8 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
 .atlas-stage.is-webgl-ready .scene-fallback { opacity: 0; }
 .scene-object { position: relative; width: min(64%, 450px); aspect-ratio: 1; transform-style: preserve-3d; transform: rotateX(var(--scene-x, -16deg)) rotateY(var(--scene-y, 25deg)); animation: scene-float 13s ease-in-out infinite alternate; filter: drop-shadow(0 34px 45px rgba(0,0,0,.42)); }
 .scene-core { position: absolute; inset: 18%; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #1e1835 0%, #0d0b1c 32%, #020309 68%, #160f2b 92%, #060611 100%); box-shadow: inset -35px -32px 35px rgba(0,0,0,.7), inset 8px 6px 22px rgba(95,69,155,.16), 0 0 40px rgba(75,48,143,.2); transform: translateZ(40px); }
+.scene-core::after { position: absolute; inset: 0; border-radius: inherit; content: ""; background: radial-gradient(circle at 22% 36%, rgba(124,83,204,.2), transparent 43%); background-size: 170% 170%; animation: core-wave 6s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes core-wave { to { background-position: 100% 85%; filter: brightness(1.12); } }
 .scene-ring { position: absolute; inset: 10%; border: 2px solid rgba(224,183,96,.78); border-radius: 50%; box-shadow: 0 0 26px rgba(224,183,96,.3); transform-style: preserve-3d; }
 .scene-ring-one { transform: rotateX(69deg) rotateY(14deg) translateZ(55px); border-width: 5px; border-color: rgba(171,130,237,.78); box-shadow: 0 0 26px rgba(145,94,224,.55), inset 0 0 22px rgba(124,78,205,.35); }
 .scene-ring-two { inset: 3%; border-color: rgba(124,221,210,.57); transform: rotateY(70deg) rotateZ(26deg) translateZ(5px); }
@@ -106,7 +108,7 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
   .profile-avatar { width: min(230px, 65vw); max-height: 270px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .skill-track, .scene-object { animation: none; }
+  .skill-track, .scene-object, .scene-core::after { animation: none; }
   .portal-link, .work-item { transition: none; }
 }
 
