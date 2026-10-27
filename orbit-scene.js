@@ -56,18 +56,30 @@ import * as THREE from "./vendor/three.module.min.js";
   const core = new THREE.Mesh(
     new THREE.SphereGeometry(1.8, 96, 64),
     new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uMotion: { value: reducedMotion ? 0 : 1 }
+      },
       vertexShader: `
+        uniform float uTime;
+        uniform float uMotion;
         varying vec3 vLocal;
         varying vec3 vViewNormal;
+        varying float vWave;
         void main() {
-          vLocal = position;
+          vec3 direction = normalize(position);
+          float travel = dot(direction, normalize(vec3(0.72, 1.0, 0.38)));
+          vWave = uMotion * (sin(travel * 10.0 - uTime * 1.35) * 0.038 + sin(travel * 18.0 + uTime * 1.8) * 0.009);
+          vec3 displaced = position + normal * vWave;
+          vLocal = displaced;
           vViewNormal = normalize(normalMatrix * normal);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
         }
       `,
       fragmentShader: `
         varying vec3 vLocal;
         varying vec3 vViewNormal;
+        varying float vWave;
         float hash3(vec3 p) {
           p = fract(p * 0.3183099 + 0.1);
           p *= 17.0;
@@ -90,6 +102,7 @@ import * as THREE from "./vendor/three.module.min.js";
           vec3 color = mix(vec3(0.002, 0.002, 0.009), vec3(0.075, 0.028, 0.145), violet * 0.8);
           float rim = pow(1.0 - max(normalize(vViewNormal).z, 0.0), 2.2);
           color += vec3(0.05, 0.021, 0.1) * rim;
+          color += vec3(0.024, 0.01, 0.045) * smoothstep(0.0, 0.045, vWave);
           gl_FragColor = vec4(color, 1.0);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
@@ -200,7 +213,7 @@ import * as THREE from "./vendor/three.module.min.js";
     try {
       const destination = new URL(item.url);
       if (destination.protocol === "https:" && destination.hostname === "github.com") {
-        window.location.assign(destination.href);
+        window.open(destination.href, "_blank", "noopener,noreferrer");
       }
     } catch (_) {
       if (label) label.textContent = `${item.title} has no repository link yet; details are shown beside the globe.`;
@@ -239,6 +252,8 @@ import * as THREE from "./vendor/three.module.min.js";
       node.add(hitTarget);
       hitTargets.push(hitTarget);
       node.position.copy(point);
+      node.userData.basePosition = point.clone();
+      node.userData.phase = index * 2.399;
       node.userData.index = index;
       nodeGroup.add(node);
       nodes.push(node);
@@ -360,6 +375,14 @@ import * as THREE from "./vendor/three.module.min.js";
   let running = false;
   function render(time) {
     if (!running) return;
+    if (!reducedMotion) {
+      const seconds = time * 0.001;
+      core.material.uniforms.uTime.value = seconds;
+      nodes.forEach((node) => {
+        node.position.copy(node.userData.basePosition);
+        node.position.y += Math.sin(seconds * 1.45 + node.userData.phase) * 0.045;
+      });
+    }
     if (!reducedMotion && !dragging) {
       const delta = Math.min(time - (previousTime || time), 48);
       universe.rotation.y += delta * 0.00005;
