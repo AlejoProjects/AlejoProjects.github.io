@@ -16,6 +16,8 @@ import * as THREE from "./vendor/three.module.min.js";
   const copy = document.querySelector("#detail-copy");
   const link = document.querySelector("#detail-link");
   const art = document.querySelector("#project-art");
+  const educationCard = document.querySelector("#education-card");
+  const educationCardClose = document.querySelector("#education-card-close");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const colors = [0xffae63, 0x63e6db, 0xff78b7, 0xb99aff, 0xf6d978, 0x80dfad];
 
@@ -112,6 +114,8 @@ import * as THREE from "./vendor/three.module.min.js";
   const glowTexture = makeGlowTexture();
   const nodeGeometry = new THREE.SphereGeometry(sectionKey === "education" ? 0.12 : 0.08, 18, 14);
   const nodes = [];
+  const hitTargets = [];
+  const hitGeometry = new THREE.SphereGeometry(sectionKey === "education" ? 0.34 : 0.29, 12, 8);
   const nodeGroup = new THREE.Group();
   globe.add(nodeGroup);
   const raycaster = new THREE.Raycaster();
@@ -121,6 +125,8 @@ import * as THREE from "./vendor/three.module.min.js";
   let moved = false;
   let lastX = 0;
   let lastY = 0;
+  let downX = 0;
+  let downY = 0;
   let hoverNode = null;
   let frameId = 0;
 
@@ -169,6 +175,45 @@ import * as THREE from "./vendor/three.module.min.js";
     });
   }
 
+  function openEducationCard(index) {
+    const item = items[index];
+    if (!item || !educationCard) return;
+    showItem(index);
+    educationCard.querySelector("#education-card-tag").textContent = item.tag || "Education";
+    educationCard.querySelector("#education-card-title").textContent = item.title;
+    educationCard.querySelector("#education-card-copy").textContent = item.copy || "A topic in my continuing studies.";
+    const resource = educationCard.querySelector("#education-card-resource");
+    resource.hidden = !/^https:\/\//.test(item.url || "");
+    if (!resource.hidden) resource.href = item.url;
+    if (!educationCard.open) educationCard.showModal();
+    educationCardClose?.focus();
+  }
+
+  function activateNode(index) {
+    const item = items[index];
+    if (!item) return;
+    if (sectionKey === "education") {
+      openEducationCard(index);
+      return;
+    }
+    showItem(index);
+    try {
+      const destination = new URL(item.url);
+      if (destination.protocol === "https:" && destination.hostname === "github.com") {
+        window.location.assign(destination.href);
+      }
+    } catch (_) {
+      if (label) label.textContent = `${item.title} has no repository link yet; details are shown beside the globe.`;
+    }
+  }
+
+  educationCardClose?.addEventListener("click", () => { if (educationCard.open) educationCard.close(); });
+  educationCard?.addEventListener("close", () => canvas.focus());
+  educationCard?.addEventListener("click", (event) => {
+    const bounds = educationCard.getBoundingClientRect();
+    if (event.target === educationCard && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) educationCard.close();
+  });
+
   function buildNodes() {
     nodeGroup.children.forEach((child) => {
       if (child.geometry && child.geometry !== nodeGeometry) child.geometry.dispose();
@@ -180,6 +225,7 @@ import * as THREE from "./vendor/three.module.min.js";
     });
     nodeGroup.clear();
     nodes.length = 0;
+    hitTargets.length = 0;
     items.forEach((item, index) => {
       const point = pointOnSphere(index, items.length, sectionKey === "education" ? 2.04 : 1.9);
       const color = colors[index % colors.length];
@@ -188,6 +234,10 @@ import * as THREE from "./vendor/three.module.min.js";
       const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture, color, transparent: true, opacity: .82, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: true }));
       aura.scale.set(sectionKey === "education" ? .9 : .62, sectionKey === "education" ? .9 : .62, 1);
       node.add(aura);
+      const hitTarget = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, colorWrite: false }));
+      hitTarget.userData.index = index;
+      node.add(hitTarget);
+      hitTargets.push(hitTarget);
       node.position.copy(point);
       node.userData.index = index;
       nodeGroup.add(node);
@@ -206,7 +256,7 @@ import * as THREE from "./vendor/three.module.min.js";
       button.dataset.index = String(index);
       button.textContent = item.title;
       button.setAttribute("aria-pressed", String(index === selectedIndex));
-      button.addEventListener("click", () => showItem(index));
+      button.addEventListener("click", () => sectionKey === "education" ? openEducationCard(index) : showItem(index));
       list.append(button);
     });
   }
@@ -227,11 +277,16 @@ import * as THREE from "./vendor/three.module.min.js";
     pointer.y = -((event.clientY - bounds.top) / bounds.height) * 2 + 1;
   }
 
+  function pointUnderPointer() {
+    raycaster.setFromCamera(pointer, camera);
+    const first = raycaster.intersectObjects([...hitTargets, core], false)[0]?.object;
+    return first?.userData.index === undefined ? null : first;
+  }
+
   function handleMove(event) {
     if (!dragging) {
       updatePointer(event);
-      raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(nodes, false)[0]?.object || null;
+      const hit = pointUnderPointer();
       if (hit !== hoverNode) {
         hoverNode = hit;
         canvas.style.cursor = hit ? "pointer" : "grab";
@@ -240,7 +295,7 @@ import * as THREE from "./vendor/three.module.min.js";
     }
     const dx = event.clientX - lastX;
     const dy = event.clientY - lastY;
-    if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+    if (Math.hypot(event.clientX - downX, event.clientY - downY) > 8) moved = true;
     globe.rotation.y += dx * 0.006;
     globe.rotation.x = THREE.MathUtils.clamp(globe.rotation.x + dy * 0.004, -0.8, 0.8);
     universe.rotation.y += dx * 0.002;
@@ -253,6 +308,8 @@ import * as THREE from "./vendor/three.module.min.js";
     moved = false;
     lastX = event.clientX;
     lastY = event.clientY;
+    downX = event.clientX;
+    downY = event.clientY;
     canvas.setPointerCapture(event.pointerId);
     canvas.style.cursor = "grabbing";
   });
@@ -260,14 +317,13 @@ import * as THREE from "./vendor/three.module.min.js";
   canvas.addEventListener("pointerup", (event) => {
     if (dragging && !moved) {
       updatePointer(event);
-      raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(nodes, false)[0]?.object;
-      if (hit) showItem(hit.userData.index);
+      const hit = pointUnderPointer();
+      if (hit) activateNode(hit.userData.index);
     }
     dragging = false;
     canvas.style.cursor = "grab";
   });
-  canvas.addEventListener("pointercancel", () => { dragging = false; });
+  canvas.addEventListener("pointercancel", () => { dragging = false; canvas.style.cursor = "grab"; });
   document.querySelector("#atlas-reset")?.addEventListener("click", () => {
     globe.rotation.set(-0.12, -0.3, 0);
     universe.rotation.set(0, 0, 0);
@@ -312,6 +368,8 @@ import * as THREE from "./vendor/three.module.min.js";
     previousTime = time;
     renderer.render(scene, camera);
     stage.classList.add("is-webgl-ready");
+    const fallback = stage.querySelector(".scene-fallback");
+    if (fallback) { fallback.inert = true; fallback.setAttribute("aria-hidden", "true"); }
     frameId = requestAnimationFrame(render);
   }
   function startRendering() {
@@ -333,4 +391,5 @@ import * as THREE from "./vendor/three.module.min.js";
   startRendering();
   complementFromGitHub();
 })();
+
 
