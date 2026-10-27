@@ -13,7 +13,7 @@
     button.addEventListener("click", () => {
       if (stage.classList.contains("is-webgl-ready") || !item) return;
       if (sectionKey === "projects") {
-        if (/^https:\/\/github\.com\//.test(item.url || "")) window.location.assign(item.url);
+        if (/^https:\/\/github\.com\//.test(item.url || "")) window.open(item.url, "_blank", "noopener,noreferrer");
         return;
       }
       document.querySelectorAll("#atlas-index button[data-index]")[index]?.click();
