@@ -87,6 +87,9 @@ body, .eyebrow { font-family: "Outfit", "Segoe UI", sans-serif; }
 .education-card #education-card-copy { max-width: 48ch; color: #c7bfd3; font-size: 1.05rem; line-height: 1.65; }
 .education-card #education-card-resource { display: inline-block; margin-top: 26px; color: #c6a4f4; text-decoration: none; }
 .education-card #education-card-resource[hidden] { display: none; }
+.atlas-page[data-section="projects"] .project-detail { align-items: flex-start; justify-content: center; background: radial-gradient(ellipse at 85% 12%, rgba(36,83,139,.24), transparent 55%), linear-gradient(160deg, #102333, #08151f); }
+.atlas-page[data-section="projects"] .project-detail-copy { width: 100%; padding: clamp(32px, 4vw, 58px); }
+.atlas-page[data-section="projects"] .project-detail-copy > p:not(.detail-kicker) { min-height: 0; }
 
 @media (max-width: 950px) {
   .home-page .hero { grid-template-columns: 1fr; }
